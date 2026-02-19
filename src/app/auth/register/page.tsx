@@ -19,10 +19,10 @@ import {
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { registerUser } from "@/services/auth"
-import { SuccessToast, ErrorToast } from "@/lib/utils"
+import { ErrorToast, SuccessToast } from "@/lib/utils"
 
 const registerSchema = z.object({
-  name: z.string().min(2, {
+  fullName: z.string().min(2, {
     message: "Name must be at least 2 characters.",
   }),
   email: z.string().email({
@@ -46,7 +46,7 @@ export default function RegisterForm() {
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      name: "",
+      fullName: "",
       email: "",
       password: "",
       phone: "",
@@ -59,9 +59,9 @@ export default function RegisterForm() {
       const result = await registerUser(data)
       
       if (result?.success) {
-        SuccessToast("Registration successful! Please login to continue.")
+        SuccessToast("Registration successful! Please verify your email.")
         setTimeout(() => {
-          router.push("/auth/login")
+          router.push("/auth/verify-email")
         }, 1500)
       } else {
         ErrorToast(result?.message || "Registration failed. Please try again.")
@@ -79,7 +79,7 @@ export default function RegisterForm() {
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl font-bold text-center">Create an Account</CardTitle>
         <CardDescription className="text-center">
-          Join Smart Surveyor to manage your survey data efficiently
+          Join Mess Management to manage your meals efficiently
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -87,7 +87,7 @@ export default function RegisterForm() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="name"
+              name="fullName"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Full Name</FormLabel>
