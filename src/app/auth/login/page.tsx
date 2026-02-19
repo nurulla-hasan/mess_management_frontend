@@ -19,7 +19,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { signInUser } from "@/services/auth"
-import { toast } from "sonner"
+import { SuccessToast, ErrorToast } from "@/lib/utils"
 
 const loginSchema = z.object({
   email: z.string().email({
@@ -54,18 +54,18 @@ function LoginContent() {
       const result = await signInUser(data)
       
       if (result?.success) {
-        toast.success("Login successful! Welcome back!")
+        SuccessToast("Login successful! Welcome back!")
         
         // Redirect based on callbackUrl or role-based path returned from service
         setTimeout(() => {
-          router.push(callbackUrl || result.redirectPath || "/dashboard")
+          router.push(callbackUrl || result.redirectPath || "/")
         }, 1000)
       } else {
-        toast.error(result?.message || "Invalid email or password. Please try again.")
+        ErrorToast(result?.message || "Invalid email or password. Please try again.")
       }
     } catch (error) {
       console.error("Login failed:", error)
-      toast.error("An unexpected error occurred. Please try again.")
+      ErrorToast("An unexpected error occurred. Please try again.")
     } finally {
       setIsLoading(false)
     }

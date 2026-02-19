@@ -1,16 +1,22 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Poppins, Geist_Mono } from 'next/font/google';
 import "./globals.css";
 import { ThemeProvider } from "@/providers/theme-provider";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const poppins_display = Poppins({
+  subsets: ['latin'],
+  weight: ['600'],
+  variable: '--display-family',
 });
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const poppins_body = Poppins({
+  subsets: ['latin'],
+  weight: ['400'],
+  variable: '--body-family',
+});
+const geist_mono = Geist_Mono({
+  subsets: ['latin'],
+  weight: ['400'],
+  variable: '--font-mono',
 });
 
 export const metadata: Metadata = {
@@ -26,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${poppins_display.variable} ${poppins_body.variable} ${geist_mono.variable}`}
       >
         <ThemeProvider
           attribute="class"

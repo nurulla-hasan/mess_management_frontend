@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { toast } from "sonner"
+import { ErrorToast, SuccessToast } from "@/lib/utils"
 
 const forgotPasswordSchema = z.object({
   email: z.string().email({
@@ -47,13 +47,13 @@ export default function ForgotPasswordPage() {
       
       // Mock success for now
       setTimeout(() => {
-          toast.success("If an account exists, a reset link has been sent.")
-          router.push("/auth/login")
+          SuccessToast("If an account exists, a reset link has been sent.")
+          router.push("/auth/verify-email")
       }, 1000)
       
     } catch (error) {
       console.error("Request failed:", error)
-      toast.error("An unexpected error occurred. Please try again.")
+      ErrorToast("An unexpected error occurred. Please try again.")
     } finally {
       setIsLoading(false)
     }

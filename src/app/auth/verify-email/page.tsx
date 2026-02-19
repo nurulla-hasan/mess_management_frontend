@@ -22,7 +22,7 @@ import {
   } from "@/components/ui/input-otp"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { verifyEmail } from "@/services/auth"
-import { toast } from "sonner"
+import { ErrorToast, SuccessToast } from "@/lib/utils"
 
 const verifySchema = z.object({
   code: z.string().length(6, {
@@ -51,16 +51,16 @@ function VerifyEmailContent() {
       const result = await verifyEmail({ email, code: data.code })
       
       if (result?.success) {
-        toast.success("Email verified successfully! Please login.")
+        SuccessToast("Email verified successfully! Please login.")
         setTimeout(() => {
           router.push("/auth/login")
         }, 1500)
       } else {
-        toast.error(result?.message || "Verification failed. Please try again.")
+        ErrorToast(result?.message || "Verification failed. Please try again.")
       }
     } catch (error) {
       console.error("Verification failed:", error)
-      toast.error("An unexpected error occurred. Please try again.")
+      ErrorToast("An unexpected error occurred. Please try again.")
     } finally {
       setIsLoading(false)
     }
@@ -82,7 +82,6 @@ function VerifyEmailContent() {
               name="code"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Verification Code</FormLabel>
                   <FormControl>
                     <div className="flex justify-center">
                         <InputOTP maxLength={6} {...field}>
