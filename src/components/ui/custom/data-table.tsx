@@ -13,7 +13,7 @@ import {
 } from "@tanstack/react-table";
 import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 
-import { PaginationMeta } from "@/types/global.type";
+import { PaginationMeta } from "@/types/global.types";
 import {
   Table,
   TableBody,
@@ -82,7 +82,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <ScrollArea className="w-[calc(100vw-32px)] md:w-[calc(100vw-288px)] xl:w-full rounded-md border whitespace-nowrap">
+      <ScrollArea className="w-[calc(100vw-42px)] lg:w-[calc(100vw-300px)] rounded-lg border whitespace-nowrap">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

@@ -49,7 +49,7 @@ function ResetPasswordContent() {
     },
   })
 
-  async function onSubmit(data: ResetPasswordFormValues) {
+  async function onSubmit() {
     if (!token) {
         toast.error("Invalid or missing reset token.")
         return

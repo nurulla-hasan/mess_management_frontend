@@ -47,7 +47,7 @@ export default function ForgotPasswordPage() {
       
       // Mock success for now
       setTimeout(() => {
-          SuccessToast("If an account exists, a reset link has been sent.")
+          SuccessToast(`We've sent a reset link to ${data.email}`)
           router.push("/auth/verify-email")
       }, 1000)
       
