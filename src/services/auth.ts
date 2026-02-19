@@ -12,6 +12,7 @@ export const signInUser = async (userData: FieldValues): Promise<any> => {
     const result = await serverFetch('/auth/login', {
       method: 'POST',
       body: userData,
+      isPublic: true,
     });
 
     if (result?.success) {
@@ -65,24 +66,26 @@ export const registerUser = async (userData: FieldValues): Promise<any> => {
     const result = await serverFetch('/auth/register', {
       method: 'POST',
       body: userData,
+      isPublic: true,
     });
 
     if (result?.success) {
-      const accessToken = result?.data?.accessToken;
+      // Do not set cookies here. Let the user verify email first.
+      // const accessToken = result?.data?.accessToken;
       
-      if (accessToken) {
-        const cookieStore = await cookies();
-        cookieStore.set('accessToken', accessToken, {
-          httpOnly: false,
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'lax',
-        });
-        cookieStore.set('refreshToken', result?.data?.refreshToken, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'lax',
-        });
-      }
+      // if (accessToken) {
+      //   const cookieStore = await cookies();
+      //   cookieStore.set('accessToken', accessToken, {
+      //     httpOnly: false,
+      //     secure: process.env.NODE_ENV === 'production',
+      //     sameSite: 'lax',
+      //   });
+      //   cookieStore.set('refreshToken', result?.data?.refreshToken, {
+      //     httpOnly: true,
+      //     secure: process.env.NODE_ENV === 'production',
+      //     sameSite: 'lax',
+      //   });
+      // }
     }
 
     return result;
@@ -97,6 +100,7 @@ export const verifyEmail = async (data: FieldValues): Promise<any> => {
         const result = await serverFetch('/auth/verify-email', {
             method: 'POST',
             body: data,
+            isPublic: true,
         });
         return result;
     } catch (error: any) {
@@ -104,13 +108,27 @@ export const verifyEmail = async (data: FieldValues): Promise<any> => {
     }
 }
 
+// RESEND VERIFICATION CODE
+export const resendVerificationCode = async (email: string): Promise<any> => {
+    try {
+        const result = await serverFetch('/auth/resend-code', {
+            method: 'POST',
+            body: { email },
+            isPublic: true,
+        });
+        return result;
+    } catch (error: any) {
+        return { success: false, message: error?.message || "Failed to resend code" };
+    }
+}
+
 // FORGOT PASSWORD
 export const forgotPassword = async (data: FieldValues): Promise<any> => {
     try {
-        // TODO: Update endpoint when available in backend
         const result = await serverFetch('/auth/forgot-password', {
             method: 'POST',
             body: data,
+            isPublic: true,
         });
         return result;
     } catch (error: any) {
@@ -121,10 +139,10 @@ export const forgotPassword = async (data: FieldValues): Promise<any> => {
 // RESET PASSWORD
 export const resetPassword = async (data: FieldValues): Promise<any> => {
     try {
-        // TODO: Update endpoint when available in backend
         const result = await serverFetch('/auth/reset-password', {
             method: 'POST',
             body: data,
+            isPublic: true,
         });
         return result;
     } catch (error: any) {
@@ -195,8 +213,13 @@ export const getCurrentUser = async (): Promise<any> => {
 };
 
 // LOGOUT
-export const logOut = async (): Promise<void> => {
-  const cookieStore = await cookies();
-  cookieStore.delete('accessToken');
-  cookieStore.delete('refreshToken');
+export const logOut = async (): Promise<any> => {
+  try {
+    const cookieStore = await cookies();
+    cookieStore.delete('accessToken');
+    cookieStore.delete('refreshToken');
+    return { success: true, message: "Logged out successfully" };
+  } catch (error: any) {
+    return { success: false, message: error?.message || "Failed to logout" };
+  }
 };

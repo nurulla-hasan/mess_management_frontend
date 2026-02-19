@@ -40,6 +40,7 @@ export async function proxy(request: NextRequest) {
       
       // If token is expired or about to expire in 30 seconds
       if (decoded.exp < currentTime + 30) {
+        console.log("Token expired or expiring soon, attempting refresh...");
         if (refreshToken) {
           const backendBase = process.env.NEXT_PUBLIC_BASE_API || 'http://localhost:5000/api/v1';
           const refreshRes = await fetch(`${backendBase}/auth/refresh-token`, {
@@ -60,8 +61,10 @@ export async function proxy(request: NextRequest) {
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'lax',
               });
+              console.log("Token refreshed successfully");
             }
           } else {
+            console.log("Refresh token failed, redirecting to login");
             // Refresh token failed, clear cookies and redirect to login
             response = NextResponse.redirect(new URL('/auth/login', origin));
             response.cookies.delete('accessToken');
@@ -70,16 +73,19 @@ export async function proxy(request: NextRequest) {
           }
         } else {
           // No refresh token but access token expired
+          console.log("Access token expired and no refresh token");
           accessToken = undefined;
         }
       }
-    } catch {
+    } catch (error) {
+      console.error("Token decode failed:", error);
       accessToken = undefined;
     }
   }
 
   // Redirect to login if accessing protected route without valid token
   if (isProtectedRoute && !accessToken) {
+    console.log(`Redirecting to login from protected route: ${pathname}`);
     const loginUrl = new URL('/auth/login', origin);
     loginUrl.searchParams.set('callbackUrl', pathname);
     return NextResponse.redirect(loginUrl);
@@ -92,6 +98,7 @@ export async function proxy(request: NextRequest) {
       
       // If user is on an auth page, redirect based on role
       if (isAuthPage) {
+        console.log(`Authenticated user on auth page, redirecting based on role: ${decoded.role}`);
         if (decoded.role === 'member') {
           return NextResponse.redirect(new URL('/member', origin));
         } else if (decoded.role === 'admin') {

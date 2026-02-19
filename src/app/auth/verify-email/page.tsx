@@ -20,7 +20,7 @@ import {
     InputOTPSlot,
   } from "@/components/ui/input-otp"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { verifyEmail } from "@/services/auth"
+import { verifyEmail, resendVerificationCode } from "@/services/auth"
 import { ErrorToast, SuccessToast } from "@/lib/utils"
 
 const verifySchema = z.object({
@@ -60,6 +60,23 @@ function VerifyEmailContent() {
     } catch (error) {
       console.error("Verification failed:", error)
       ErrorToast("An unexpected error occurred. Please try again.")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  async function handleResend() {
+    if (!email) return
+    setIsLoading(true)
+    try {
+      const result = await resendVerificationCode(email)
+      if (result?.success) {
+        SuccessToast("Verification code resent successfully!")
+      } else {
+        ErrorToast(result?.message || "Failed to resend code.")
+      }
+    } catch (error) {
+      ErrorToast("An error occurred.")
     } finally {
       setIsLoading(false)
     }
@@ -105,6 +122,12 @@ function VerifyEmailContent() {
             <Button type="submit" className="w-full" loading={isLoading} loadingText="Verifying...">
               Verify Email
             </Button>
+            <div className="text-center text-sm">
+              Didn't receive code?{" "}
+              <button type="button" onClick={handleResend} className="underline underline-offset-4 hover:text-primary" disabled={isLoading}>
+                Resend
+              </button>
+            </div>
           </form>
         </Form>
       </CardContent>

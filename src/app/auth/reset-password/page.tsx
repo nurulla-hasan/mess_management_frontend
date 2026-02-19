@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { useRouter, useSearchParams } from "next/navigation"
-import { Eye, EyeOff, Lock } from "lucide-react"
+import { Eye, EyeOff, Lock, KeyRound } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -16,10 +16,20 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@/components/ui/input-otp"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { toast } from "sonner"
+import { resetPassword } from "@/services/auth"
+import { ErrorToast, SuccessToast } from "@/lib/utils"
 
 const resetPasswordSchema = z.object({
+  code: z.string().length(6, {
+    message: "Verification code must be 6 digits.",
+  }),
   password: z.string().min(6, {
     message: "Password must be at least 6 characters.",
   }),
@@ -36,7 +46,7 @@ type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>
 function ResetPasswordContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const token = searchParams.get("token")
+  const email = searchParams.get("email")
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -44,31 +54,32 @@ function ResetPasswordContent() {
   const form = useForm<ResetPasswordFormValues>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
+      code: "",
       password: "",
       confirmPassword: "",
     },
   })
 
-  async function onSubmit() {
-    if (!token) {
-        toast.error("Invalid or missing reset token.")
-        return
+  async function onSubmit(data: ResetPasswordFormValues) {
+    if (!email) {
+      ErrorToast("Email is missing. Please try forgot password again.")
+      return
     }
 
     setIsLoading(true)
     try {
-      // TODO: Implement actual API call
-      // const result = await resetPassword({ token, password: data.password })
+      const result = await resetPassword({ ...data, email })
       
-      // Mock success
-      setTimeout(() => {
-          toast.success("Password reset successfully! Please login.")
-          router.push("/auth/login")
-      }, 1000)
+      if (result.success) {
+        SuccessToast("Password reset successfully! Please login.")
+        router.push("/auth/login")
+      } else {
+        ErrorToast(result.message || "Failed to reset password")
+      }
 
     } catch (error) {
       console.error("Reset failed:", error)
-      toast.error("An unexpected error occurred. Please try again.")
+      ErrorToast("An unexpected error occurred. Please try again.")
     } finally {
       setIsLoading(false)
     }
@@ -79,12 +90,39 @@ function ResetPasswordContent() {
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl font-bold text-center">Reset Password</CardTitle>
         <CardDescription className="text-center">
-          Enter your new password below
+          Enter the code sent to {email} and your new password
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="code"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-center block">Verification Code</FormLabel>
+                  <FormControl>
+                    <div className="flex justify-center">
+                        <InputOTP maxLength={6} {...field}>
+                            <InputOTPGroup>
+                                <InputOTPSlot index={0} />
+                                <InputOTPSlot index={1} />
+                                <InputOTPSlot index={2} />
+                            </InputOTPGroup>
+                            <InputOTPSeparator />
+                            <InputOTPGroup>
+                                <InputOTPSlot index={3} />
+                                <InputOTPSlot index={4} />
+                                <InputOTPSlot index={5} />
+                            </InputOTPGroup>
+                        </InputOTP>
+                    </div>
+                  </FormControl>
+                  <FormMessage className="text-center" />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="password"
@@ -100,17 +138,22 @@ function ResetPasswordContent() {
                         className="pl-10 pr-10"
                         {...field}
                       />
-                      <button
+                      <Button
                         type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-3 text-muted-foreground hover:text-foreground transition-colors"
                       >
                         {showPassword ? (
-                          <EyeOff className="h-4 w-4" />
+                          <EyeOff className="h-4 w-4 text-muted-foreground" />
                         ) : (
-                          <Eye className="h-4 w-4" />
+                          <Eye className="h-4 w-4 text-muted-foreground" />
                         )}
-                      </button>
+                        <span className="sr-only">
+                          {showPassword ? "Hide password" : "Show password"}
+                        </span>
+                      </Button>
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -132,25 +175,30 @@ function ResetPasswordContent() {
                         className="pl-10 pr-10"
                         {...field}
                       />
-                      <button
+                      <Button
                         type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-3 top-3 text-muted-foreground hover:text-foreground transition-colors"
                       >
                         {showConfirmPassword ? (
-                          <EyeOff className="h-4 w-4" />
+                          <EyeOff className="h-4 w-4 text-muted-foreground" />
                         ) : (
-                          <Eye className="h-4 w-4" />
+                          <Eye className="h-4 w-4 text-muted-foreground" />
                         )}
-                      </button>
+                        <span className="sr-only">
+                          {showConfirmPassword ? "Hide password" : "Show password"}
+                        </span>
+                      </Button>
                     </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full" loading={isLoading} loadingText="Resetting...">
-              Reset Password
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? "Resetting..." : "Reset Password"}
             </Button>
           </form>
         </Form>
@@ -160,9 +208,9 @@ function ResetPasswordContent() {
 }
 
 export default function ResetPasswordPage() {
-    return (
-        <Suspense fallback={<div className="flex items-center justify-center min-h-100">Loading...</div>}>
-            <ResetPasswordContent />
-        </Suspense>
-    )
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ResetPasswordContent />
+    </Suspense>
+  )
 }

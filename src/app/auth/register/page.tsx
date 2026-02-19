@@ -61,7 +61,7 @@ export default function RegisterForm() {
       if (result?.success) {
         SuccessToast("Registration successful! Please verify your email.")
         setTimeout(() => {
-          router.push("/auth/verify-email")
+          router.push(`/auth/verify-email?email=${encodeURIComponent(data.email)}`)
         }, 1500)
       } else {
         ErrorToast(result?.message || "Registration failed. Please try again.")

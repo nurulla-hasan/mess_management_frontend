@@ -20,6 +20,8 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ErrorToast, SuccessToast } from "@/lib/utils"
 
+import { forgotPassword } from "@/services/auth"
+
 const forgotPasswordSchema = z.object({
   email: z.string().email({
     message: "Please enter a valid email address.",
@@ -42,14 +44,14 @@ export default function ForgotPasswordPage() {
   async function onSubmit(data: ForgotPasswordFormValues) {
     setIsLoading(true)
     try {
-      // TODO: Implement actual API call
-      // const result = await requestPasswordReset(data)
+      const result = await forgotPassword(data)
       
-      // Mock success for now
-      setTimeout(() => {
-          SuccessToast(`We've sent a reset link to ${data.email}`)
-          router.push("/auth/verify-email")
-      }, 1000)
+      if (result.success) {
+        SuccessToast("Verification code sent to your email")
+        router.push(`/auth/reset-password?email=${encodeURIComponent(data.email)}`)
+      } else {
+        ErrorToast(result.message || "Failed to send reset link")
+      }
       
     } catch (error) {
       console.error("Request failed:", error)

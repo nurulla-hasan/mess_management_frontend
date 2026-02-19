@@ -24,6 +24,8 @@ export const metadata: Metadata = {
   description: "Efficiently manage your mess meals, expenses, and members.",
 };
 
+import { Toaster } from "@/components/ui/sonner";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -36,11 +38,12 @@ export default function RootLayout({
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="white"
+          defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
           {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
