@@ -21,7 +21,7 @@ export function MessManagement() {
 
   return (
     <Card>
-      <CardHeader className="pb-3">
+      <CardHeader>
         <CardTitle className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">
           Mess Management
         </CardTitle>

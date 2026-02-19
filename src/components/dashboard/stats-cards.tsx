@@ -9,8 +9,8 @@ export function StatsCards() {
       change: "12% from last month",
       icon: Utensils,
       trend: "up",
-      color: "text-blue-500",
-      bg: "bg-blue-50"
+      color: "text-chart-1",
+      bg: "bg-chart-1/10"
     },
     {
       title: "Meal Rate",
@@ -18,8 +18,8 @@ export function StatsCards() {
       change: "৳1.20 less than average",
       icon: Banknote,
       trend: "down",
-      color: "text-orange-500",
-      bg: "bg-orange-50"
+      color: "text-chart-2",
+      bg: "bg-chart-2/10"
     },
     {
       title: "My Total Deposit",
@@ -27,8 +27,8 @@ export function StatsCards() {
       change: "Verified: ৳2,000",
       icon: Landmark,
       trend: "neutral",
-      color: "text-purple-500",
-      bg: "bg-purple-50"
+      color: "text-chart-3",
+      bg: "bg-chart-3/10"
     },
     {
       title: "Current Balance",
@@ -36,17 +36,17 @@ export function StatsCards() {
       change: "SURPLUS Funds available",
       icon: Wallet,
       trend: "up",
-      color: "text-green-500",
-      bg: "bg-green-50",
+      color: "text-chart-4",
+      bg: "bg-chart-4/10",
       highlight: true
     },
   ]
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
       {stats.map((stat, index) => (
-        <Card key={index} className={stat.highlight ? "border-green-200 bg-green-50/30" : ""}>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <Card key={index} className={stat.highlight ? "border-primary/20 bg-primary/5" : ""}>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0">
             <CardTitle className="text-sm font-medium text-muted-foreground">
               {stat.title}
             </CardTitle>
@@ -55,7 +55,7 @@ export function StatsCards() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className={`text-2xl font-bold ${stat.highlight ? "text-green-600" : ""}`}>{stat.value}</div>
+            <div className={`text-2xl font-bold ${stat.highlight ? "text-primary-foreground" : ""}`}>{stat.value}</div>
             <p className="text-xs text-muted-foreground mt-1">
               {stat.change}
             </p>

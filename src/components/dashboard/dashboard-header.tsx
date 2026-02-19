@@ -11,7 +11,7 @@ export function DashboardHeader() {
         </p>
       </div>
       <div className="flex items-center gap-2">
-        <Button className="bg-green-500 hover:bg-green-600 text-white">
+        <Button>
           <Plus className="mr-2 h-4 w-4" /> Add Meals
         </Button>
         <Button variant="outline">

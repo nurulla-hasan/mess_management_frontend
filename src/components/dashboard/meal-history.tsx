@@ -66,12 +66,12 @@ const data: MealRecord[] = [
 export function MealHistory() {
   return (
     <Card className="h-full">
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
+      <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="text-lg font-semibold flex items-center gap-2">
           <Calendar className="h-5 w-5 text-muted-foreground" />
           Meal History
         </CardTitle>
-        <Button variant="ghost" size="sm" className="text-green-600 hover:text-green-700 hover:bg-green-50 font-medium h-8">
+        <Button variant="ghost" size="sm" className="font-medium h-8">
           View All
         </Button>
       </CardHeader>

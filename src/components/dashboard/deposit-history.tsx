@@ -46,13 +46,10 @@ const columns: ColumnDef<DepositRecord>[] = [
     header: "STATUS",
     cell: ({ row }) => {
       const status = row.getValue("status") as string
+      const variant = status === "verified" ? "success" : status === "pending" ? "warning" : "destructive"
+      
       return (
-        <Badge variant={status === "verified" ? "default" : status === "pending" ? "secondary" : "destructive"} 
-          className={
-            status === "verified" ? "bg-green-100 text-green-700 hover:bg-green-100 shadow-none border-green-200" : 
-            status === "pending" ? "bg-amber-100 text-amber-700 hover:bg-amber-100 shadow-none border-amber-200" : ""
-          }
-        >
+        <Badge variant={variant} className="capitalize">
           {status}
         </Badge>
       )
@@ -65,7 +62,7 @@ const columns: ColumnDef<DepositRecord>[] = [
       const status = row.original.status
       if (status === "pending") {
         return (
-          <Button variant="outline" size="sm" className="h-7 text-xs border-amber-200 text-amber-700 hover:bg-amber-50">
+          <Button variant="outline" size="sm" className="h-7 text-xs">
             Request Verification
           </Button>
         )
@@ -84,12 +81,12 @@ const data: DepositRecord[] = [
 export function DepositHistory() {
   return (
     <Card className="h-full">
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
+      <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="text-lg font-semibold flex items-center gap-2">
           <History className="h-5 w-5 text-muted-foreground" />
           Detailed Deposit History
         </CardTitle>
-        <Button variant="ghost" size="sm" className="text-green-600 hover:text-green-700 hover:bg-green-50 font-medium h-8">
+        <Button variant="ghost" size="sm" className="font-medium h-8">
           Download Report
         </Button>
       </CardHeader>
