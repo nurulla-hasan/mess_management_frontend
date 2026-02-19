@@ -81,8 +81,8 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="space-y-4">
-      <ScrollArea className="w-[calc(100vw-42px)] lg:w-[calc(100vw-300px)] rounded-lg border whitespace-nowrap">
+    <div className="space-y-4 w-full overflow-hidden">
+      <ScrollArea className="w-full rounded-lg border whitespace-nowrap">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
