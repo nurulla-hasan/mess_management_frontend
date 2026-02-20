@@ -20,10 +20,13 @@ export const serverFetch = async (
     if (accessToken) {
       defaultHeaders["Authorization"] = `Bearer ${accessToken}`;
     } else {
-      // If no token is present for a protected route, we can skip the request
-      // and throw an error immediately to avoid unnecessary API calls and 401 logs.
-      // This is common during logout.
-      throw new Error("Not authorized, no token provided");
+      // If no token is present for a protected route, return a standard error response
+      // instead of throwing, to avoid unhandled runtime errors during logout/redirects.
+      return { 
+        success: false, 
+        message: "Not authorized, no token provided",
+        statusCode: 401 
+      };
     }
   }
 

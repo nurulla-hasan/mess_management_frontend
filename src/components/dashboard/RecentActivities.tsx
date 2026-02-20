@@ -74,11 +74,7 @@ const columns: ColumnDef<Activity>[] = [
       const status = row.getValue("status") as string;
       return (
         <Badge
-          className={
-            status === "Completed" || status === "Approved"
-              ? "bg-green-100 text-green-700 hover:bg-green-100"
-              : "bg-yellow-100 text-yellow-700 hover:bg-yellow-100"
-          }
+          variant={status === "Completed" || status === "Approved" ? "default" : "outline"}
         >
           {status}
         </Badge>

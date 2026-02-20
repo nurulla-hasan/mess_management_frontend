@@ -54,7 +54,7 @@ export function PettyCashAdjustmentModal() {
           amount: parseFloat(formData.amount),
           category: "other",
           items: `Adjustment: ${formData.reason}`,
-          memberId: formData.member.value,
+          buyerId: formData.member.value,
           paymentSource: "mess_fund",
         };
         result = await addExpenseAction(payload);
@@ -144,6 +144,9 @@ export function PettyCashAdjustmentModal() {
             placeholder="Select Member"
             searchPlaceholder="Search members..."
           />
+          <p className="text-xs text-muted-foreground">
+            This member is recorded as the reporter. The cost is still shared by all.
+          </p>
         </div>
 
         <div className="space-y-2">

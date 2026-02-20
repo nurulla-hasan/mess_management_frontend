@@ -84,7 +84,7 @@ export function AddExpenseModal() {
       description="Record a new expense for the mess."
       actionTrigger={
         <Button variant="destructive">
-          <Minus className="mr-2 h-4 w-4" /> Add Expense
+          <Minus /> Add Expense
         </Button>
       }
     >

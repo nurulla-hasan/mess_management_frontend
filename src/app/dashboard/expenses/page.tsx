@@ -42,7 +42,7 @@ export default async function ExpensesPage({ searchParams }: ExpensesPageProps) 
         description="Track and manage bazar/market tracking for current cycle."
       >
         <Button>
-            <ShoppingCart className="h-4 w-4" />
+            <ShoppingCart />
             Add Expense
         </Button>
       </PageHeader>
