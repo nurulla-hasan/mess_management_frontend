@@ -24,7 +24,7 @@ function SearchInputContent({
       <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
       <Input
         placeholder={placeholder}
-        className="pl-10 bg-muted/20"
+        className="pl-10 rounded-full max-w-64"
         defaultValue={searchParam}
         onChange={(e) => updateFilter(filterKey, e.target.value, 300)}
       />
@@ -37,8 +37,8 @@ export function SearchInput(props: SearchInputProps) {
     <Suspense
       fallback={
         <div
-          className={`h-9 animate-pulse bg-muted/20 rounded-md ${
-            props.className || "max-w-64"
+          className={`animate-pulse rounded-md ${
+            props.className
           }`}
         />
       }
