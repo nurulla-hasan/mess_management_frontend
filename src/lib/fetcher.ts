@@ -19,6 +19,11 @@ export const serverFetch = async (
     const accessToken = cookieStore.get("accessToken")?.value;
     if (accessToken) {
       defaultHeaders["Authorization"] = `Bearer ${accessToken}`;
+    } else {
+      // If no token is present for a protected route, we can skip the request
+      // and throw an error immediately to avoid unnecessary API calls and 401 logs.
+      // This is common during logout.
+      throw new Error("Not authorized, no token provided");
     }
   }
 

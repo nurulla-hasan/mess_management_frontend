@@ -52,7 +52,9 @@ export const getMembers = async (
     }
     return null;
   } catch (error) {
-    console.error("Failed to fetch members:", error);
+    if ((error as Error).message !== "Not authorized, no token provided") {
+      console.error("Failed to fetch members:", error);
+    }
     return null;
   }
 };
@@ -65,7 +67,9 @@ export const getMemberStats = async (): Promise<MemberStats | null> => {
     }
     return null;
   } catch (error) {
-    console.error("Failed to fetch member stats:", error);
+    if ((error as Error).message !== "Not authorized, no token provided") {
+      console.error("Failed to fetch member stats:", error);
+    }
     return null;
   }
 };

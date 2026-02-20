@@ -45,7 +45,9 @@ export const getMeals = async (
     }
     return null;
   } catch (error) {
-    console.error("Failed to fetch meals:", error);
+    if ((error as Error).message !== "Not authorized, no token provided") {
+      console.error("Failed to fetch meals:", error);
+    }
     return null;
   }
 };
@@ -65,7 +67,9 @@ export const getMealSummary = async (
     }
     return null;
   } catch (error) {
-    console.error("Failed to fetch meal summary:", error);
+    if ((error as Error).message !== "Not authorized, no token provided") {
+      console.error("Failed to fetch meal summary:", error);
+    }
     return null;
   }
 };

@@ -20,7 +20,9 @@ export const getDashboardStats = async (): Promise<DashboardStats | null> => {
     }
     return null;
   } catch (error) {
-    console.error("Failed to fetch dashboard stats:", error);
+    if ((error as Error).message !== "Not authorized, no token provided") {
+      console.error("Failed to fetch dashboard stats:", error);
+    }
     return null;
   }
 };
@@ -31,6 +33,7 @@ export interface MemberDashboardStats {
     totalMeals: number;
     mealRate: number;
     estimatedCost: number;
+    projectedCost: number;
   };
   financials: {
     totalDeposited: number;
@@ -50,7 +53,9 @@ export const getMemberDashboardStats = async (): Promise<MemberDashboardStats | 
     }
     return null;
   } catch (error) {
-    console.error("Failed to fetch member dashboard stats:", error);
+    if ((error as Error).message !== "Not authorized, no token provided") {
+      console.error("Failed to fetch member dashboard stats:", error);
+    }
     return null;
   }
 };

@@ -47,7 +47,10 @@ export const getAllDeposits = async (
     }
     return null;
   } catch (error) {
-    console.error("Failed to fetch deposits:", error);
+    // Suppress auth errors during logout/redirect
+    if ((error as Error).message !== "Not authorized, no token provided") {
+      console.error("Failed to fetch deposits:", error);
+    }
     return null;
   }
 };
@@ -67,7 +70,9 @@ export const getDepositSummary = async (
     }
     return null;
   } catch (error) {
-    console.error("Failed to fetch deposit summary:", error);
+    if ((error as Error).message !== "Not authorized, no token provided") {
+      console.error("Failed to fetch deposit summary:", error);
+    }
     return null;
   }
 };

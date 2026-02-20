@@ -1,54 +1,29 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { ModalWrapper } from "@/components/ui/custom/modal-wrapper";
 import { Button } from "@/components/ui/button";
-import { CreditCard } from "lucide-react";
-import { useState, useCallback } from "react";
+import { Wallet } from "lucide-react";
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { addDepositAction } from "@/actions/deposit";
-import { getAllMembersAction } from "@/actions/member";
-import { SearchableSelect, SearchableOption } from "@/components/ui/custom/searchable-select";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { ErrorToast, SuccessToast } from "@/lib/utils";
 
-export function RecordPaymentModal() {
+export function MakeDepositModal() {
   const [open, setOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split("T")[0],
     amount: "",
-    paymentMethod: "cash",
+    paymentMethod: "bkash",
     note: "",
-    member: null as SearchableOption | null,
   });
-
-  const fetchMemberOptions = useCallback(async (search: string) => {
-    try {
-      const members = await getAllMembersAction();
-      if (!Array.isArray(members)) return [];
-      
-      return members
-        .filter((m: any) => {
-          const name = m.userId?.fullName || "";
-          return name.toLowerCase().includes(search.toLowerCase());
-        })
-        .map((m: any) => ({
-          value: m._id,
-          label: m.userId?.fullName || "Unknown Member",
-          original: m,
-        }));
-    } catch (error) {
-      console.error("Failed to fetch member options:", error);
-      return [];
-    }
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.amount || !formData.paymentMethod || !formData.member) {
+    if (!formData.amount || !formData.paymentMethod) {
       ErrorToast("Please fill all required fields");
       return;
     }
@@ -60,24 +35,23 @@ export function RecordPaymentModal() {
         amount: parseFloat(formData.amount),
         paymentMethod: formData.paymentMethod,
         note: formData.note,
-        memberId: formData.member.value,
+        // memberId is not included, backend will use logged-in user's memberId
       };
 
       const result = await addDepositAction(payload);
       if (result?.success) {
-        SuccessToast("Payment recorded successfully");
+        SuccessToast("Deposit request submitted successfully");
         setOpen(false);
         setFormData({
           date: new Date().toISOString().split("T")[0],
           amount: "",
-          paymentMethod: "cash",
+          paymentMethod: "bkash",
           note: "",
-          member: null,
         });
       } else {
-        ErrorToast(result?.message || "Failed to record payment");
+        ErrorToast(result?.message || "Failed to submit deposit request");
       }
-    } catch  {
+    } catch {
       ErrorToast("Something went wrong");
     } finally {
       setSubmitting(false);
@@ -88,11 +62,12 @@ export function RecordPaymentModal() {
     <ModalWrapper
       open={open}
       onOpenChange={setOpen}
-      title="Record Payment"
-      description="Add a deposit to member's balance."
+      title="Make a Deposit"
+      description="Submit a deposit request for approval."
       actionTrigger={
-        <Button variant="secondary">
-          <CreditCard /> Record Payment
+        <Button className="w-full justify-start gap-2" variant="outline">
+          <Wallet className="h-4 w-4 text-green-500" />
+          Make Deposit
         </Button>
       }
     >
@@ -121,17 +96,6 @@ export function RecordPaymentModal() {
               required
             />
           </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label>Member</Label>
-          <SearchableSelect
-            onSelect={(option) => setFormData({ ...formData, member: option })}
-            fetchOptions={fetchMemberOptions}
-            value={formData.member}
-            placeholder="Select Member"
-            searchPlaceholder="Search members..."
-          />
         </div>
 
         <div className="space-y-2">
@@ -165,8 +129,8 @@ export function RecordPaymentModal() {
         </div>
 
         <div className="flex justify-end pt-4">
-          <Button type="submit" variant="secondary" disabled={submitting}>
-            {submitting ? "Recording..." : "Record Payment"}
+          <Button type="submit" disabled={submitting}>
+            {submitting ? "Submitting..." : "Submit Request"}
           </Button>
         </div>
       </form>

@@ -52,7 +52,9 @@ export const getMealRateTrend = async (months: number = 6): Promise<MealRateTren
     const response = await serverFetch(`/reports/meal-rate-trend?months=${months}`);
     return response?.success ? response.data : null;
   } catch (error) {
-    console.error("Failed to fetch meal rate trend:", error);
+    if ((error as Error).message !== "Not authorized, no token provided") {
+      console.error("Failed to fetch meal rate trend:", error);
+    }
     return null;
   }
 };
@@ -66,7 +68,9 @@ export const getExpenseDistribution = async (month?: number, year?: number): Pro
     const response = await serverFetch(`/reports/expense-distribution?${queryParams}`);
     return response?.success ? response.data : null;
   } catch (error) {
-    console.error("Failed to fetch expense distribution:", error);
+    if ((error as Error).message !== "Not authorized, no token provided") {
+      console.error("Failed to fetch expense distribution:", error);
+    }
     return null;
   }
 };
@@ -80,7 +84,9 @@ export const getSettlement = async (month?: number, year?: number): Promise<Sett
     const response = await serverFetch(`/reports/settlement?${queryParams}`);
     return response?.success ? response.data : null;
   } catch (error) {
-    console.error("Failed to fetch settlement data:", error);
+    if ((error as Error).message !== "Not authorized, no token provided") {
+      console.error("Failed to fetch settlement data:", error);
+    }
     return null;
   }
 };
