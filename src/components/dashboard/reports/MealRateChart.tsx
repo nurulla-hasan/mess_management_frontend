@@ -1,18 +1,15 @@
+
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { MealRateTrend } from "@/services/report";
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
-const data = [
-  { month: "May", rate: 45 },
-  { month: "Jun", rate: 52 },
-  { month: "Jul", rate: 48 },
-  { month: "Aug", rate: 60 },
-  { month: "Sep", rate: 55 },
-  { month: "Oct", rate: 72.5 },
-];
+interface MealRateChartProps {
+  data: MealRateTrend[];
+}
 
-export function MealRateChart() {
+export function MealRateChart({ data }: MealRateChartProps) {
   return (
     <Card className="col-span-1">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -37,8 +34,7 @@ export function MealRateChart() {
                 tickLine={false}
                 axisLine={false}
                 tickFormatter={(value) => `${value}`}
-                domain={[0, 80]}
-                ticks={[0, 20, 40, 60, 80]}
+                domain={[0, 'auto']}
               />
               <Tooltip 
                 contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}

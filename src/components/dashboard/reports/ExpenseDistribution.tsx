@@ -1,16 +1,30 @@
+
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ExpenseDistributionItem } from "@/services/report";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 
-const data = [
-  { name: "Rent", value: 40, color: "#1a1a1a", amount: 5000 },
-  { name: "Market", value: 35, color: "#22c55e", amount: 4350 },
-  { name: "Gas/Utility", value: 25, color: "#16a34a", amount: 3100 },
-];
+interface ExpenseDistributionProps {
+  total: number;
+  distribution: ExpenseDistributionItem[];
+}
 
-export function ExpenseDistribution() {
-  const totalExpense = data.reduce((acc, curr) => acc + curr.amount, 0);
+const COLORS: Record<string, string> = {
+  "Market": "#22c55e",
+  "Rent": "#1a1a1a",
+  "Gas/Utility": "#16a34a",
+  "Other": "#9ca3af"
+};
+
+const DEFAULT_COLOR = "#888888";
+
+export function ExpenseDistribution({ total, distribution }: ExpenseDistributionProps) {
+  // Filter out zero values to avoid empty segments
+  const data = distribution.filter(item => item.value > 0).map(item => ({
+    ...item,
+    color: COLORS[item.name] || DEFAULT_COLOR
+  }));
 
   return (
     <Card className="col-span-1">
@@ -39,14 +53,14 @@ export function ExpenseDistribution() {
                 ))}
               </Pie>
               <Tooltip 
-                 formatter={(value, name, props) => [`${value}% (৳${props.payload.amount})`, name]}
+                 formatter={(value, name, props) => [`${props.payload.percentage}% (৳${value})`, name]}
                  contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
               />
             </PieChart>
           </ResponsiveContainer>
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
             <span className="text-xs text-muted-foreground">Total</span>
-            <span className="text-xl font-bold">৳{totalExpense.toLocaleString()}</span>
+            <span className="text-xl font-bold">৳{total.toLocaleString()}</span>
           </div>
         </div>
 
@@ -58,7 +72,7 @@ export function ExpenseDistribution() {
                 style={{ backgroundColor: item.color }}
               />
               <span className="text-sm text-muted-foreground">
-                {item.name} ({item.value}%)
+                {item.name} ({item.percentage}%)
               </span>
             </div>
           ))}

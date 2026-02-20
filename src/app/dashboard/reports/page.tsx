@@ -1,20 +1,35 @@
-"use client";
 
 import { ExpenseDistribution } from "@/components/dashboard/reports/ExpenseDistribution";
 import { MealRateChart } from "@/components/dashboard/reports/MealRateChart";
+import { ReportMonthSelector } from "@/components/dashboard/reports/ReportMonthSelector";
 import { SettlementTable } from "@/components/dashboard/reports/SettlementTable";
 import { Button } from "@/components/ui/button";
 import PageHeader from "@/components/ui/custom/page-header";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { getExpenseDistribution, getMealRateTrend, getSettlement } from "@/services/report";
 import { Download } from "lucide-react";
 
-export default function ReportsPage() {
+interface ReportsPageProps {
+  searchParams: Promise<{ 
+    month?: string; 
+    year?: string;
+  }>;
+}
+
+export default async function ReportsPage({ searchParams }: ReportsPageProps) {
+  const { 
+    month: paramMonth, 
+    year: paramYear 
+  } = await searchParams;
+
+  const month = paramMonth ? parseInt(paramMonth) : new Date().getMonth() + 1;
+  const year = paramYear ? parseInt(paramYear) : new Date().getFullYear();
+
+  const [mealRateTrend, expenseDistribution, settlementData] = await Promise.all([
+    getMealRateTrend(6),
+    getExpenseDistribution(month, year),
+    getSettlement(month, year),
+  ]);
+
   return (
     <div className="flex flex-col gap-6 w-full">
       <PageHeader
@@ -22,16 +37,7 @@ export default function ReportsPage() {
         description="Detailed overview of monthly trends and settlements."
       >
         <div className="flex items-center gap-2">
-          <Select defaultValue="oct-2023">
-            <SelectTrigger className="w-35 bg-background">
-              <SelectValue placeholder="Select month" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="oct-2023">October 2023</SelectItem>
-              <SelectItem value="sep-2023">September 2023</SelectItem>
-              <SelectItem value="aug-2023">August 2023</SelectItem>
-            </SelectContent>
-          </Select>
+          <ReportMonthSelector currentMonth={month} currentYear={year} />
           <Button variant="outline" className="gap-2 bg-background">
             <Download className="h-4 w-4" />
             Export PDF
@@ -40,11 +46,25 @@ export default function ReportsPage() {
       </PageHeader>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <MealRateChart />
-        <ExpenseDistribution />
+        <MealRateChart data={mealRateTrend || []} />
+        <ExpenseDistribution 
+          total={expenseDistribution?.total || 0} 
+          distribution={expenseDistribution?.distribution || []} 
+        />
       </div>
 
-      <SettlementTable />
+      <SettlementTable 
+        settlement={settlementData?.settlement || []} 
+        totals={settlementData?.totals || {
+          totalMembersCount: 0,
+          totalMeals: 0,
+          totalMealCost: 0,
+          totalFixedShare: 0,
+          totalLiability: 0,
+          totalDeposited: 0,
+          totalBalance: 0,
+        }} 
+      />
     </div>
   );
 }
