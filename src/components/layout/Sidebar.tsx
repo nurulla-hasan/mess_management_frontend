@@ -26,27 +26,27 @@ const sidebarItems = [
   },
   {
     title: "Members",
-    href: "/members",
+    href: "/dashboard/members",
     icon: Users,
   },
   {
     title: "Meals",
-    href: "/meals",
+    href: "/dashboard/meals",
     icon: Utensils,
   },
   {
     title: "Expenses",
-    href: "/expenses",
+    href: "/dashboard/expenses",
     icon: Wallet,
   },
   {
     title: "Reports",
-    href: "/reports",
+    href: "/dashboard/reports",
     icon: FileText,
   },
   {
     title: "Settings",
-    href: "/settings",
+    href: "/dashboard/settings",
     icon: Settings,
   },
 ];

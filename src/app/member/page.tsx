@@ -1,10 +1,10 @@
-import { DashboardHeader } from "@/components/members/dashboard-header"
-import { StatsCards } from "@/components/dashboard/stats-cards"
-import { MealHistory } from "@/components/members/meal-history"
-import { MessSummary } from "@/components/members/mess-summary"
-import { DepositHistory } from "@/components/members/deposit-history"
-import { MessManagement } from "@/components/members/mess-management"
-import { MealOffDeadline } from "@/components/members/meal-off-deadline"
+import { DashboardHeader } from "@/components/members-dashboard/dashboard-header"
+import { StatsCards } from "@/components/members-dashboard/stats-cards"
+import { MealHistory } from "@/components/members-dashboard/meal-history"
+import { MessSummary } from "@/components/members-dashboard/mess-summary"
+import { DepositHistory } from "@/components/members-dashboard/deposit-history"
+import { MessManagement } from "@/components/members-dashboard/mess-management"
+import { MealOffDeadline } from "@/components/members-dashboard/meal-off-deadline"
 
 export default function MemberPage() {
   return (

@@ -7,7 +7,7 @@ export function MealOffDeadline() {
       <div>
         <h4 className="font-semibold text-sm text-primary">Meal Off Deadline</h4>
         <p className="text-xs text-primary/80 mt-1 leading-relaxed">
-          Remember to off your meals before 10:00 PM for the next day's breakfast.
+          Remember to off your meals before 10:00 PM for the next day&apos;s breakfast.
         </p>
       </div>
     </div>
