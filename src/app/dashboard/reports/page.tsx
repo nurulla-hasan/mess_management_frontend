@@ -3,10 +3,9 @@ import { ExpenseDistribution } from "@/components/dashboard/reports/ExpenseDistr
 import { MealRateChart } from "@/components/dashboard/reports/MealRateChart";
 import { ReportMonthSelector } from "@/components/dashboard/reports/ReportMonthSelector";
 import { SettlementTable } from "@/components/dashboard/reports/SettlementTable";
-import { Button } from "@/components/ui/button";
+import { ExportReportButton } from "@/components/dashboard/reports/ExportReportButton";
 import PageHeader from "@/components/ui/custom/page-header";
 import { getExpenseDistribution, getMealRateTrend, getSettlement } from "@/services/report";
-import { Download } from "lucide-react";
 
 interface ReportsPageProps {
   searchParams: Promise<{ 
@@ -31,17 +30,20 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
   ]);
 
   return (
-    <div className="flex flex-col gap-6 w-full">
+    <div className="flex flex-col gap-6 w-full" id="report-content">
       <PageHeader
         title="Financial Reports"
         description="Detailed overview of monthly trends and settlements."
       >
         <div className="flex items-center gap-2">
           <ReportMonthSelector currentMonth={month} currentYear={year} />
-          <Button variant="outline" className="gap-2 bg-background">
-            <Download className="h-4 w-4" />
-            Export PDF
-          </Button>
+          <ExportReportButton 
+            month={month} 
+            year={year}
+            expenseDistribution={expenseDistribution}
+            settlementData={settlementData}
+            mealRateTrend={mealRateTrend}
+          />
         </div>
       </PageHeader>
 
