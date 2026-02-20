@@ -6,6 +6,7 @@ import { jwtDecode } from 'jwt-decode';
 import { FieldValues } from 'react-hook-form';
 import { serverFetch } from '@/lib/fetcher';
 
+
 // SIGN IN (With Role Check)
 export const signInUser = async (userData: FieldValues): Promise<any> => {
   try {
@@ -205,11 +206,15 @@ export const updateUserData = async (userData: FieldValues): Promise<any> => {
 
 // GET CURRENT USER
 export const getCurrentUser = async (): Promise<any> => {
-  const accessToken = (await cookies()).get('accessToken')?.value;
-  if (accessToken) {
-    return jwtDecode(accessToken);
+  try {
+    const accessToken = (await cookies()).get('accessToken')?.value;
+    if (accessToken) {
+      return jwtDecode(accessToken);
+    }
+    return null;
+  } catch {
+    return null;
   }
-  return null;
 };
 
 // LOGOUT

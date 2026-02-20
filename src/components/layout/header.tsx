@@ -33,9 +33,9 @@ export function Header() {
       <div className="flex items-center gap-4">
         <div className="relative w-full md:w-64 hidden md:block">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Search..." className="pl-8" />
+          <Input placeholder="Search..." className="pl-8 rounded-full" />
         </div>
-        <Button variant="ghost" size="icon" className="relative h-9 w-9 rounded-full bg-muted/50">
+        <Button variant="outline" size="icon" className="relative rounded-full">
           <Bell className="h-4 w-4" />
           <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500 border border-background" />
           <span className="sr-only">Notifications</span>
