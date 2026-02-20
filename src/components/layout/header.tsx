@@ -22,13 +22,6 @@ export function Header() {
             <SidebarContent />
           </SheetContent>
         </Sheet>
-        <div className="flex flex-col gap-1">
-          <h1 className="text-lg font-semibold leading-none hidden md:block">Dashboard Overview</h1>
-          <h1 className="text-lg font-semibold leading-none md:hidden">Dashboard</h1>
-          <p className="text-xs text-muted-foreground hidden md:block">
-            Welcome back, here&apos;s what&apos;s happening today.
-          </p>
-        </div>
       </div>
       <div className="flex items-center gap-4">
         <div className="relative w-full md:w-64 hidden md:block">

@@ -1,17 +1,28 @@
 "use client"
 
 import { Badge } from "@/components/ui/badge"
+import { ReactNode } from "react"
 
-const PageHeader = ({title, description, length}: {title: string, description: string, length?: number}) => {
+interface PageHeaderProps {
+    title: string;
+    description: string;
+    length?: number;
+    children?: ReactNode;
+}
+
+const PageHeader = ({ title, description, length, children }: PageHeaderProps) => {
     return (
-        <div className="grid">
-            <div className="flex items-center gap-4">
-                <h1 className="text-xl font-bold uppercase tracking-normal">{title}</h1>
-                {length && <Badge className="rounded-full">{length}</Badge>}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="grid gap-1">
+                <div className="flex items-center gap-4">
+                    <h1 className="text-xl font-bold uppercase tracking-normal">{title}</h1>
+                    {length && <Badge className="rounded-full">{length}</Badge>}
+                </div>
+                <p className="text-muted-foreground">
+                    {description}
+                </p>
             </div>
-            <p className="text-muted-foreground">
-                {description}
-            </p>
+            {children && <div className="flex items-center gap-2">{children}</div>}
         </div>
     )
 }

@@ -81,17 +81,22 @@ export function SidebarContent() {
       <div className="flex-1 overflow-y-auto py-4">
         <nav className="grid gap-1 px-2">
           {sidebarItems.map((item, index) => {
-            const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+            const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(`${item.href}/`));
             return (
               <Link
                 key={index}
                 href={item.href}
                 className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground",
-                  isActive ? "bg-primary-50 text-primary-600 hover:bg-primary-100 hover:text-primary-700" : "text-muted-foreground"
+                  "relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 ease-in-out group overflow-hidden",
+                  isActive
+                    ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
                 )}
               >
-                <item.icon className="h-4 w-4" />
+                {isActive && (
+                    <span className="absolute left-0 top-1/2 -translate-y-1/2 h-1/2 w-1 rounded-r-full bg-primary-foreground/50" />
+                )}
+                <item.icon className={cn("h-4 w-4 transition-transform duration-300 group-hover:scale-110")} />
                 {item.title}
               </Link>
             );
