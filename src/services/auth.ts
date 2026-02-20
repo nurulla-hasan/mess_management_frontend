@@ -207,11 +207,8 @@ export const updateUserData = async (userData: FieldValues): Promise<any> => {
 // GET CURRENT USER
 export const getCurrentUser = async (): Promise<any> => {
   try {
-    const accessToken = (await cookies()).get('accessToken')?.value;
-    if (accessToken) {
-      return jwtDecode(accessToken);
-    }
-    return null;
+    const result = await serverFetch('/auth/me');
+    return result?.data?.user || null;
   } catch {
     return null;
   }
@@ -226,5 +223,17 @@ export const logOut = async (): Promise<any> => {
     return { success: true, message: "Logged out successfully" };
   } catch (error: any) {
     return { success: false, message: error?.message || "Failed to logout" };
+  }
+};
+
+export const updateProfile = async (formData: FormData): Promise<any> => {
+  try {
+    const response = await serverFetch('/settings/profile', {
+      method: 'PUT',
+      body: formData,
+    });
+    return response;
+  } catch (error: any) {
+    return { success: false, message: error.message };
   }
 };

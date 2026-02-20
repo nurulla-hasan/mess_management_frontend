@@ -4,7 +4,6 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/custom/data-table";
 
 export type Activity = {
@@ -97,9 +96,6 @@ export function RecentActivities({ activities }: RecentActivitiesProps) {
     <Card className="col-span-2">
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>Recent Activities</CardTitle>
-        <Button variant="outline" size="sm">
-          View All
-        </Button>
       </CardHeader>
       <CardContent>
         <DataTable columns={columns} data={activities} />

@@ -5,7 +5,7 @@ import { AlertCircle } from "lucide-react";
 
 export function MealOffDeadline() {
   return (
-    <Card className="border shadow-sm bg-amber-50 border-amber-200">
+    <Card className="border shadow-sm">
       <CardHeader className="pb-2">
         <CardTitle className="text-sm font-medium text-amber-800 flex items-center gap-2">
           <AlertCircle className="h-4 w-4" />

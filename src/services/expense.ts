@@ -11,9 +11,10 @@ export interface Expense {
       profilePicture?: string;
     };
   };
-  category: "Meat & Fish" | "Vegetables" | "Groceries" | "Utility" | "Other";
+  category: "meat_fish" | "vegetables" | "groceries" | "utility" | "other";
   items: string;
   amount: number;
+  status: "pending" | "approved" | "rejected";
   receiptUrl?: string;
   paymentSource: string;
   adjustment: number;
@@ -48,7 +49,8 @@ export const getExpenses = async (
   page: number = 1,
   limit: number = 10,
   category?: string,
-  search?: string
+  search?: string,
+  buyerId?: string
 ): Promise<ExpenseResponse | null> => {
   try {
     const queryParams = new URLSearchParams();
@@ -58,6 +60,7 @@ export const getExpenses = async (
     queryParams.append("limit", limit.toString());
     if (category) queryParams.append("category", category);
     if (search) queryParams.append("search", search);
+    if (buyerId) queryParams.append("buyerId", buyerId);
 
     const response = await serverFetch(`/expenses?${queryParams}`);
     if (response?.success) {
