@@ -141,7 +141,7 @@ export function RequestExpenseModal() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="personal">Personal (I paid)</SelectItem>
-              <SelectItem value="mess_fund">Mess Fund (Cash)</SelectItem>
+              <SelectItem value="mess_fund">Petty Cash (Mess Fund)</SelectItem>
             </SelectContent>
           </Select>
         </div>
