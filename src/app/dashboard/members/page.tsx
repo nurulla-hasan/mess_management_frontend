@@ -28,7 +28,7 @@ export default async function MembersPage({ searchParams }: PageProps) {
         title="Member Management" 
         description="Manage your mess members, roles, and status."
       >
-        <Button className="bg-green-500 hover:bg-green-600 text-white gap-2">
+        <Button>
           <UserPlus className="h-4 w-4" />
           Add Member
         </Button>

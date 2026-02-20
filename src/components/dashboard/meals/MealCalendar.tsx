@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   addMonths,
   eachDayOfInterval,
@@ -12,33 +11,71 @@ import {
   startOfMonth,
   subMonths,
 } from "date-fns";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { Meal } from "@/services/meal";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useTransition } from "react";
 
-// Mock data for meals
-const MEAL_DATA: Record<string, { lunch: number; dinner: number }> = {
-  "2023-10-01": { lunch: 1.0, dinner: 1.0 },
-  "2023-10-02": { lunch: 1.0, dinner: 0.5 },
-  "2023-10-03": { lunch: 0.0, dinner: 1.0 },
-  "2023-10-04": { lunch: 1.0, dinner: 1.0 },
-  "2023-10-05": { lunch: 2.0, dinner: 1.0 }, // Guest meal
-  "2023-10-09": { lunch: 1.0, dinner: 1.0 }, // Today in mock
-  "2023-10-24": { lunch: 1.0, dinner: 1.0 },
-};
+interface MealCalendarProps {
+  meals: Meal[] | null;
+  currentDate: Date;
+}
 
-export function MealCalendar() {
-  const [currentMonth, setCurrentMonth] = useState(new Date());
+export function MealCalendar({ meals, currentDate }: MealCalendarProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
 
-  const firstDay = startOfMonth(currentMonth);
-  const lastDay = endOfMonth(currentMonth);
+  // Process meals into a map for easy lookup
+  const mealMap: Record<string, { lunch: number; dinner: number }> = {};
+  if (meals) {
+    meals.forEach((meal) => {
+      const dateKey = format(new Date(meal.date), "yyyy-MM-dd");
+      const dayTotals = meal.entries.reduce(
+        (acc, entry) => ({
+          lunch: acc.lunch + entry.lunch,
+          dinner: acc.dinner + entry.dinner,
+        }),
+        { lunch: 0, dinner: 0 }
+      );
+      mealMap[dateKey] = dayTotals;
+    });
+  }
+
+  // Update URL when month changes
+  const updateUrl = (date: Date) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("month", (date.getMonth() + 1).toString());
+    params.set("year", date.getFullYear().toString());
+    
+    startTransition(() => {
+      router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    });
+  };
+
+  const firstDay = startOfMonth(currentDate);
+  const lastDay = endOfMonth(currentDate);
   const days = eachDayOfInterval({ start: firstDay, end: lastDay });
   const startDayOfWeek = getDay(firstDay); // 0 = Sunday
 
-  const previousMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
-  const nextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
-  const goToToday = () => setCurrentMonth(new Date());
+  const handlePreviousMonth = () => {
+    const newDate = subMonths(currentDate, 1);
+    updateUrl(newDate);
+  };
+
+  const handleNextMonth = () => {
+    const newDate = addMonths(currentDate, 1);
+    updateUrl(newDate);
+  };
+
+  const handleGoToToday = () => {
+    const newDate = new Date();
+    updateUrl(newDate);
+  };
 
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -46,21 +83,22 @@ export function MealCalendar() {
     <Card className="w-full h-full flex flex-col">
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
-          <CardTitle className="text-xl font-bold">
-            {format(currentMonth, "MMMM yyyy")}
+          <CardTitle className="text-xl font-bold flex items-center gap-2">
+            {format(currentDate, "MMMM yyyy")}
+            {isPending && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
           </CardTitle>
           <p className="text-sm text-muted-foreground">
             View and manage daily meal logs
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="icon" onClick={previousMonth}>
+          <Button variant="outline" size="icon" onClick={handlePreviousMonth} disabled={isPending}>
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <Button variant="outline" size="sm" onClick={goToToday}>
+          <Button variant="outline" size="sm" onClick={handleGoToToday} disabled={isPending}>
             Today
           </Button>
-          <Button variant="outline" size="icon" onClick={nextMonth}>
+          <Button variant="outline" size="icon" onClick={handleNextMonth} disabled={isPending}>
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
@@ -95,22 +133,22 @@ export function MealCalendar() {
           {Array.from({ length: startDayOfWeek }).map((_, i) => (
             <div
               key={`empty-${i}`}
-              className="min-h-25 border-b border-r bg-muted/5"
+              className="min-h-24 border-b border-r bg-muted/5"
             />
           ))}
 
           {/* Days */}
           {days.map((day) => {
             const dateKey = format(day, "yyyy-MM-dd");
-            const data = MEAL_DATA[dateKey];
+            const data = mealMap[dateKey];
             const isTodayDate = isToday(day);
 
             return (
               <div
                 key={day.toString()}
                 className={cn(
-                  "min-h-25 p-2 border-b border-r relative group transition-colors hover:bg-muted/50",
-                  !isSameMonth(day, currentMonth) && "text-muted-foreground bg-muted/10",
+                  "min-h-24 p-2 border-b border-r relative group transition-colors hover:bg-muted/50",
+                  !isSameMonth(day, currentDate) && "text-muted-foreground bg-muted/10",
                   isTodayDate && "ring-1 ring-inset ring-green-500 bg-green-50/10"
                 )}
               >
@@ -126,7 +164,7 @@ export function MealCalendar() {
                     {format(day, "d")}
                   </span>
                   {isTodayDate && (
-                    <span className="text-[10px] font-bold text-green-600 dark:text-green-400 uppercase tracking-tighter">
+                    <span className="text-[10px] font-bold text-primary uppercase tracking-tighter">
                       Today
                     </span>
                   )}
@@ -162,7 +200,7 @@ export function MealCalendar() {
           
            {/* Empty cells to fill the last row */}
            {Array.from({ length: (7 - (getDay(lastDay) + 1)) % 7 }).map((_, i) => (
-             <div key={`empty-end-${i}`} className="min-h-25 border-b border-r bg-muted/5" />
+             <div key={`empty-end-${i}`} className="min-h-24 border-b border-r bg-muted/5" />
            ))}
         </div>
       </CardContent>

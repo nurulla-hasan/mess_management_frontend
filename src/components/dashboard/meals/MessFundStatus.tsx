@@ -1,7 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Wallet } from "lucide-react";
 
-export function MessFundStatus() {
+interface MessFundStatusProps {
+  totalCollected?: number;
+  totalExpense?: number;
+}
+
+export function MessFundStatus({ totalCollected = 0, totalExpense = 0 }: MessFundStatusProps) {
+  const balance = totalCollected - totalExpense;
+
   return (
     <Card className="bg-slate-950 text-slate-50 border-slate-800 h-full">
       <CardHeader>
@@ -21,7 +28,7 @@ export function MessFundStatus() {
         <div className="flex items-center justify-between">
           <div className="space-y-1">
             <p className="text-sm text-slate-400">Total Collected</p>
-            <p className="text-2xl font-bold">25,000</p>
+            <p className="text-2xl font-bold">{totalCollected.toLocaleString()}</p>
           </div>
           <span className="text-lg font-bold">৳</span>
         </div>
@@ -29,10 +36,22 @@ export function MessFundStatus() {
         <div className="flex items-center justify-between">
           <div className="space-y-1">
             <p className="text-sm text-slate-400">Total Expenses</p>
-            <p className="text-2xl font-bold">23,725</p>
+            <p className="text-2xl font-bold">{totalExpense.toLocaleString()}</p>
           </div>
           <span className="text-lg font-bold">৳</span>
         </div>
+        
+        {/* Optional: Show Balance */}
+         <div className="pt-4 border-t border-slate-800 flex items-center justify-between">
+          <div className="space-y-1">
+            <p className="text-sm text-slate-400">Current Balance</p>
+            <p className={`text-xl font-bold ${balance >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+              {balance.toLocaleString()}
+            </p>
+          </div>
+          <span className="text-lg font-bold">৳</span>
+        </div>
+
       </CardContent>
     </Card>
   );
