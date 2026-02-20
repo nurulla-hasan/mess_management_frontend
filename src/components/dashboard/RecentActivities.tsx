@@ -147,11 +147,11 @@ const columns: ColumnDef<Activity>[] = [
   },
   {
     accessorKey: "status",
-    header: () => <div className="text-right">STATUS</div>,
+    header: () => <div className="flex justify-end">STATUS</div>,
     cell: ({ row }) => {
       const status = row.getValue("status") as string;
       return (
-        <div className="text-right">
+        <div>
           <Badge
             variant="outline"
             className={
