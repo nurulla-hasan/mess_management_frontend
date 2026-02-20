@@ -3,28 +3,18 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal, Info } from "lucide-react";
 
-const alerts = [
-  {
-    id: 1,
-    name: "Mike Ross",
-    avatar: "/avatars/mike.png",
-    amount: "৳4,500",
-  },
-  {
-    id: 2,
-    name: "Rachel Zane",
-    avatar: "/avatars/rachel.png",
-    amount: "৳1,250",
-  },
-  {
-    id: 3,
-    name: "Louis Litt",
-    avatar: "/avatars/louis.png",
-    amount: "৳500",
-  },
-];
+export interface PaymentAlert {
+  id: string;
+  name: string;
+  avatar: string;
+  amount: string;
+}
 
-export function PaymentAlerts() {
+interface PaymentAlertsProps {
+  alerts: PaymentAlert[];
+}
+
+export function PaymentAlerts({ alerts }: PaymentAlertsProps) {
   return (
     <div className="space-y-6">
       <Card>
@@ -35,32 +25,36 @@ export function PaymentAlerts() {
           </Button>
         </CardHeader>
         <CardContent className="space-y-4">
-          {alerts.map((alert) => (
-            <div
-              key={alert.id}
-              className="flex items-center justify-between p-3 border rounded-lg bg-card"
-            >
-              <div className="flex items-center gap-3">
-                <Avatar>
-                  <AvatarImage src={alert.avatar} alt={alert.name} />
-                  <AvatarFallback>
-                    {alert.name.substring(0, 2).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="font-medium text-sm">{alert.name}</p>
-                  <p className="text-xs text-red-500 font-medium">
-                    Owes {alert.amount}
-                  </p>
+          {alerts.length === 0 ? (
+             <div className="text-center text-sm text-muted-foreground py-4">No payment alerts</div>
+          ) : (
+            alerts.map((alert) => (
+              <div
+                key={alert.id}
+                className="flex items-center justify-between p-3 border rounded-lg bg-card"
+              >
+                <div className="flex items-center gap-3">
+                  <Avatar>
+                    <AvatarImage src={alert.avatar} alt={alert.name} />
+                    <AvatarFallback>
+                      {alert.name.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="font-medium text-sm">{alert.name}</p>
+                    <p className="text-xs text-red-500 font-medium">
+                      Owes {alert.amount}
+                    </p>
+                  </div>
                 </div>
+                <Button variant="outline" size="sm">
+                  {Number(alert.amount.replace(/[^0-9]/g, "")) > 1000
+                    ? "Remind"
+                    : "Details"}
+                </Button>
               </div>
-              <Button variant="outline" size="sm">
-                {Number(alert.amount.replace(/[^0-9]/g, "")) > 1000
-                  ? "Remind"
-                  : "Details"}
-              </Button>
-            </div>
-          ))}
+            ))
+          )}
         </CardContent>
       </Card>
 

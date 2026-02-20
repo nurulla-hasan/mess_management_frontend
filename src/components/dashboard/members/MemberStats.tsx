@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle2, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { MemberStats as MemberStatsType } from "@/services/member";
 
 interface StatCardProps {
   title: string;
@@ -41,25 +42,38 @@ function StatCard({ title, value, statusText, statusType = "neutral", icon }: St
   );
 }
 
-export function MemberStats() {
+interface MemberStatsProps {
+  stats: MemberStatsType | null;
+}
+
+export function MemberStats({ stats }: MemberStatsProps) {
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat("bn-BD", {
+      style: "currency",
+      currency: "BDT",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
   return (
     <div className="grid gap-4 md:grid-cols-3">
       <StatCard
-        title="Current Balance"
-        value="BDT 15,420"
-        statusText="Verified today"
+        title="Total Active Members"
+        value={stats?.totalMembers?.toString() || "0"}
+        statusText="Active members in mess"
         statusType="success"
         icon={<CheckCircle2 className="h-3 w-3 text-green-500" />}
       />
       <StatCard
-        title="Avg. Meal Cost"
-        value="BDT 45.50"
-        statusText="Based on current month"
+        title="Total Mess Balance"
+        value={formatCurrency(stats?.totalBalance || 0)}
+        statusText="Current collected funds"
         statusType="neutral"
       />
       <StatCard
         title="Pending Settlements"
-        value="BDT 2,150"
+        value={formatCurrency(stats?.pendingSettlements || 0)}
         statusText="Needs attention"
         statusType="warning"
         icon={<AlertCircle className="h-3 w-3 text-red-500" />}

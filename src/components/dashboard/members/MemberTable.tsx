@@ -9,68 +9,12 @@ import { Pencil } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-type Member = {
-  id: string;
-  name: string;
-  avatar: string;
-  memberId: string;
-  phone: string;
-  email: string;
-  role: "Admin" | "Member";
-  joinDate: string;
-  status: "Active" | "Inactive";
-};
-
-const members: Member[] = [
-  {
-    id: "1",
-    name: "John Doe",
-    avatar: "/avatars/john.png",
-    memberId: "#M1001",
-    phone: "+880 1712-345678",
-    email: "john.doe@email.com",
-    role: "Admin",
-    joinDate: "Oct 12, 2023",
-    status: "Active",
-  },
-  {
-    id: "2",
-    name: "Jane Smith",
-    avatar: "/avatars/jane.png",
-    memberId: "#M1002",
-    phone: "+880 1812-445566",
-    email: "jane.smith@email.com",
-    role: "Member",
-    joinDate: "Oct 15, 2023",
-    status: "Active",
-  },
-  {
-    id: "3",
-    name: "Mike Ross",
-    avatar: "/avatars/mike.png",
-    memberId: "#M1003",
-    phone: "+880 1912-778899",
-    email: "mike.ross@email.com",
-    role: "Member",
-    joinDate: "Nov 01, 2023",
-    status: "Inactive",
-  },
-  {
-    id: "4",
-    name: "Rachel Zane",
-    avatar: "/avatars/rachel.png",
-    memberId: "#M1004",
-    phone: "+880 1512-990011",
-    email: "rachel.zane@email.com",
-    role: "Member",
-    joinDate: "Nov 05, 2023",
-    status: "Active",
-  },
-];
+import { Member } from "@/services/member";
+import { PaginationMeta } from "@/types/global.types";
+import { format } from "date-fns";
 
 const StatusCell = ({ initialStatus }: { initialStatus: string }) => {
-  const [isActive, setIsActive] = useState(initialStatus === "Active");
+  const [isActive, setIsActive] = useState(initialStatus === "active");
   return (
     <div className="flex items-center gap-2">
       <div
@@ -89,7 +33,7 @@ const StatusCell = ({ initialStatus }: { initialStatus: string }) => {
           )}
         />
       </div>
-      <span className="text-sm text-muted-foreground">
+      <span className="text-sm text-muted-foreground capitalize">
         {isActive ? "Active" : "Inactive"}
       </span>
     </div>
@@ -98,22 +42,39 @@ const StatusCell = ({ initialStatus }: { initialStatus: string }) => {
 
 const columns: ColumnDef<Member>[] = [
   {
-    accessorKey: "name",
+    accessorFn: (row) => row.userId?.fullName || "Unknown",
+    id: "name",
     header: "NAME",
     cell: ({ row }) => {
       const member = row.original;
+      const user = member.userId;
+
+      if (!user) {
+        return (
+          <div className="flex items-center gap-3">
+             <Avatar className="h-10 w-10">
+              <AvatarFallback>??</AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col">
+              <span className="font-medium text-sm text-red-500">Unknown User</span>
+              <span className="text-xs text-muted-foreground">ID: {member._id}</span>
+            </div>
+          </div>
+        )
+      }
+
       return (
         <div className="flex items-center gap-3">
           <Avatar className="h-10 w-10">
-            <AvatarImage src={member.avatar} alt={member.name} />
+            <AvatarImage src={user.profilePicture} alt={user.fullName} />
             <AvatarFallback>
-              {member.name.substring(0, 2).toUpperCase()}
+              {user.fullName?.substring(0, 2).toUpperCase() || "??"}
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
-            <span className="font-medium text-sm">{member.name}</span>
+            <span className="font-medium text-sm">{user.fullName}</span>
             <span className="text-xs text-muted-foreground">
-              {member.memberId}
+              {user.email}
             </span>
           </div>
         </div>
@@ -121,41 +82,51 @@ const columns: ColumnDef<Member>[] = [
     },
   },
   {
-    accessorKey: "phone",
+    accessorFn: (row) => row.userId?.phone || "N/A",
+    id: "phone",
     header: "PHONE",
-    cell: ({ row }) => <div className="text-sm">{row.getValue("phone")}</div>,
+    cell: ({ row }) => <div className="text-sm">{row.original.userId?.phone || "N/A"}</div>,
   },
   {
-    accessorKey: "email",
+    accessorFn: (row) => row.userId?.email || "N/A",
+    id: "email",
     header: "EMAIL",
     cell: ({ row }) => (
       <div className="text-sm text-muted-foreground">
-        {row.getValue("email")}
+        {row.original.userId?.email || "N/A"}
       </div>
     ),
   },
   {
-    accessorKey: "role",
+    accessorFn: (row) => row.userId?.role || "member",
+    id: "role",
     header: "ROLE",
     cell: ({ row }) => (
       <Badge
-        variant={row.getValue("role") === "Admin" ? "default" : "secondary"}
+        variant={row.original.userId?.role === "admin" ? "default" : "secondary"}
+        className="capitalize"
       >
-        {row.getValue("role")}
+        {row.original.userId?.role || "Member"}
       </Badge>
     ),
   },
   {
-    accessorKey: "joinDate",
+    accessorFn: (row) => row.userId?.joinDate,
+    id: "joinDate",
     header: "JOIN DATE",
-    cell: ({ row }) => (
-      <div className="text-sm">{row.getValue("joinDate")}</div>
-    ),
+    cell: ({ row }) => {
+      const date = row.original.userId?.joinDate;
+      return (
+        <div className="text-sm">
+          {date ? format(new Date(date), "MMM dd, yyyy") : "N/A"}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "status",
     header: "STATUS",
-    cell: ({ row }) => <StatusCell initialStatus={row.getValue("status")} />,
+    cell: ({ row }) => <StatusCell initialStatus={row.original.status} />,
   },
   {
     id: "actions",
@@ -168,14 +139,19 @@ const columns: ColumnDef<Member>[] = [
   },
 ];
 
-export function MemberTable() {
+interface MemberTableProps {
+  members: Member[];
+  pagination: PaginationMeta;
+}
+
+export function MemberTable({ members, pagination }: MemberTableProps) {
   return (
     <Card>
       <CardHeader>
         <CardTitle>Members</CardTitle>
       </CardHeader>
       <CardContent>
-        <DataTable columns={columns} data={members} />
+        <DataTable columns={columns} data={members} meta={pagination} />
       </CardContent>
     </Card>
   );
