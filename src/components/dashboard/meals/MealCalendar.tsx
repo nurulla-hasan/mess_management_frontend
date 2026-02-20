@@ -92,14 +92,14 @@ export function MealCalendar({ meals, currentDate }: MealCalendarProps) {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="icon" onClick={handlePreviousMonth} disabled={isPending}>
-            <ChevronLeft className="h-4 w-4" />
+          <Button variant="outline" size="icon-sm" onClick={handlePreviousMonth} disabled={isPending}>
+            <ChevronLeft />
           </Button>
           <Button variant="outline" size="sm" onClick={handleGoToToday} disabled={isPending}>
             Today
           </Button>
-          <Button variant="outline" size="icon" onClick={handleNextMonth} disabled={isPending}>
-            <ChevronRight className="h-4 w-4" />
+          <Button variant="outline" size="icon-sm" onClick={handleNextMonth} disabled={isPending}>
+            <ChevronRight />
           </Button>
         </div>
       </CardHeader>

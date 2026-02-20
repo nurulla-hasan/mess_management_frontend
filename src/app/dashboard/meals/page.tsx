@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { PlusCircle } from "lucide-react";
 import { getMeals, getMealSummary } from "@/services/meal";
+import { getDepositSummary } from "@/services/deposit";
 import PageHeader from "@/components/ui/custom/page-header";
 
 interface MealsPageProps {
@@ -22,9 +23,10 @@ export default async function MealsPage({ searchParams }: MealsPageProps) {
   const currentDate = new Date(year, month - 1, 1);
 
   // Parallel data fetching
-  const [meals, summary] = await Promise.all([
+  const [meals, summary, depositSummary] = await Promise.all([
     getMeals(month, year),
     getMealSummary(month, year),
+    getDepositSummary(month, year),
   ]);
 
   return (
@@ -56,7 +58,7 @@ export default async function MealsPage({ searchParams }: MealsPageProps) {
         </div>
         <div className="lg:col-span-1">
           <MessFundStatus 
-            totalCollected={0} // TODO: Fetch real deposit data
+            totalCollected={depositSummary?.totalCollected || 0}
             totalExpense={summary?.totalExpense || 0} 
           />
         </div>
