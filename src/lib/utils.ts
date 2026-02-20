@@ -70,3 +70,12 @@ export const generateSlug = (title: string) => {
     .replace(/[\s_-]+/g, "-") // Replace spaces/underscores with -
     .replace(/^-+|-+$/g, ""); // Always remove leading and trailing hyphens
 };
+
+export const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat("bn-BD", {
+      style: "currency",
+      currency: "BDT",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };

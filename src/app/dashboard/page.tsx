@@ -13,18 +13,12 @@ import { PaymentAlerts, PaymentAlert } from "@/components/dashboard/PaymentAlert
 import { Button } from "@/components/ui/button";
 import { getDashboardStats } from "@/services/dashboard";
 import { format } from "date-fns";
+import { formatCurrency } from "@/lib/utils";
 
 export default async function AdminDashboard() {
   const stats = await getDashboardStats();
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("bn-BD", {
-      style: "currency",
-      currency: "BDT",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
+ 
 
   // Transform recent activities
   const recentActivities: Activity[] = [];
