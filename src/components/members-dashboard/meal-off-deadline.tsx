@@ -1,15 +1,22 @@
-import { AlertCircle } from "lucide-react"
+"use client";
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { AlertCircle } from "lucide-react";
 
 export function MealOffDeadline() {
   return (
-    <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 flex gap-3 mt-4">
-      <AlertCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-      <div>
-        <h4 className="font-semibold text-sm text-primary">Meal Off Deadline</h4>
-        <p className="text-xs text-primary/80 mt-1 leading-relaxed">
-          Remember to off your meals before 10:00 PM for the next day&apos;s breakfast.
+    <Card className="border shadow-sm bg-amber-50 border-amber-200">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm font-medium text-amber-800 flex items-center gap-2">
+          <AlertCircle className="h-4 w-4" />
+          Meal Off Deadline
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p className="text-xs text-amber-700">
+          Remember to update your meal status before <span className="font-bold">10:00 PM</span> for the next day.
         </p>
-      </div>
-    </div>
-  )
+      </CardContent>
+    </Card>
+  );
 }

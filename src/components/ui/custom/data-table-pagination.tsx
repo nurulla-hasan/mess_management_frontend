@@ -10,7 +10,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { PaginationMeta } from "@/types/global.type";
+import { PaginationMeta } from "@/types/global.types";
 import { cn } from "@/lib/utils";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import React from "react";
@@ -52,34 +52,43 @@ export function DataTablePagination<TData>({
   return (
     <div className="flex items-center justify-between px-2">
       <div className="text-muted-foreground flex-1 text-sm">
-        {meta && (
+        {meta ? (
           <>
             Showing {(meta.page - 1) * meta.limit + 1} to{" "}
             {Math.min(meta.page * meta.limit, meta.total)} of {meta.total}{" "}
             entries
           </>
+        ) : (
+          <>
+            Showing {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} to{" "}
+            {Math.min(
+              (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
+              table.getFilteredRowModel().rows.length
+            )} of {table.getFilteredRowModel().rows.length}{" "}
+            entries
+          </>
         )}
       </div>
       <div className="flex items-center space-x-6 lg:space-x-8">
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                onClick={(e: { preventDefault: () => void; }) => {
-                  e.preventDefault();
-                  if (meta) {
-                    if (meta.page > 1) handlePageChange(meta.page - 1);
-                  } else {
-                    table.previousPage();
-                  }
-                }}
-                className={cn(
-                  "rounded-full cursor-pointer",
-                  !table.getCanPreviousPage() &&
-                    "pointer-events-none opacity-50",
-                )}
-              />
-            </PaginationItem>
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={(e: { preventDefault: () => void; }) => {
+                    e.preventDefault();
+                    if (meta) {
+                      if (meta.page > 1) handlePageChange(meta.page - 1);
+                    } else {
+                      table.previousPage();
+                    }
+                  }}
+                  className={cn(
+                    "rounded-full cursor-pointer",
+                    !table.getCanPreviousPage() &&
+                      "pointer-events-none opacity-50",
+                  )}
+                />
+              </PaginationItem>
 
             {(() => {
               const page = table.getState().pagination.pageIndex + 1;

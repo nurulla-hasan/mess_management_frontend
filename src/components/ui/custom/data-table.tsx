@@ -10,8 +10,11 @@ import {
   getSortedRowModel,
   SortingState,
   PaginationState,
+  ColumnFiltersState,
+  getFilteredRowModel,
 } from "@tanstack/react-table";
 import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 import { PaginationMeta } from "@/types/global.types";
 import {
@@ -39,6 +42,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   limit?: number;
   meta?: PaginationMeta;
+  searchKey?: string;
 }
 
 export function DataTable<TData, TValue>({
@@ -46,8 +50,10 @@ export function DataTable<TData, TValue>({
   data,
   limit = 10,
   meta,
+  searchKey,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [pagination, setPagination] = React.useState<PaginationState>({
     pageIndex: meta ? meta.page - 1 : 0,
     pageSize: limit,
@@ -71,9 +77,12 @@ export function DataTable<TData, TValue>({
       : undefined,
     state: {
       sorting,
+      columnFilters,
       pagination,
     },
     onPaginationChange: setPagination,
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
     manualPagination: !!meta,
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
@@ -83,6 +92,18 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
+      {searchKey && (
+        <div className="flex items-center">
+          <Input
+            placeholder={`Filter ${searchKey}...`}
+            value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn(searchKey)?.setFilterValue(event.target.value)
+            }
+            className="max-w-xs rounded-full"
+          />
+        </div>
+      )}
       <ScrollArea className="w-[calc(100vw-85px)] md:w-[calc(100vw-340px)]  xl:w-full rounded-lg border whitespace-nowrap">
         <Table>
           <TableHeader>
@@ -177,7 +198,7 @@ export function DataTable<TData, TValue>({
       </ScrollArea>
 
       <React.Suspense fallback={null}>
-        {meta && (
+        {(meta || table.getPageCount() > 1) && (
           <DataTablePagination table={table} meta={meta} />
         )}
       </React.Suspense>

@@ -108,6 +108,11 @@ export async function proxy(request: NextRequest) {
         }
       }
 
+      // Restrict members from accessing dashboard
+      if (pathname.startsWith('/dashboard') && decoded.role === 'member') {
+        return NextResponse.redirect(new URL('/member', origin));
+      }
+
       // If user is on a protected route, ensure they have access (optional strict check)
       if (pathname.startsWith('/member') && decoded.role !== 'member') {
          return NextResponse.redirect(new URL('/', origin)); // Redirect non-members to home/admin

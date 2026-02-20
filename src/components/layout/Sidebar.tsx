@@ -12,6 +12,7 @@ import {
   Settings,
   User,
   LogOut,
+  CreditCard,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -33,6 +34,11 @@ const sidebarItems = [
     title: "Meals",
     href: "/dashboard/meals",
     icon: Utensils,
+  },
+  {
+    title: "Deposits",
+    href: "/dashboard/deposits",
+    icon: CreditCard,
   },
   {
     title: "Expenses",

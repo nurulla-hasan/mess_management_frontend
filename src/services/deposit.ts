@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { serverFetch } from "@/lib/fetcher";
 
 export interface Deposit {
@@ -28,6 +29,28 @@ export interface DepositSummary {
   totalCollected: number;
   count: number;
 }
+
+export const getAllDeposits = async (
+  page: number = 1,
+  limit: number = 10,
+  status?: string
+): Promise<{ deposits: any[]; pagination: any } | null> => {
+  try {
+    const queryParams = new URLSearchParams();
+    queryParams.append("page", page.toString());
+    queryParams.append("limit", limit.toString());
+    if (status) queryParams.append("status", status);
+
+    const response = await serverFetch(`/deposits?${queryParams}`);
+    if (response?.success) {
+      return response.data;
+    }
+    return null;
+  } catch (error) {
+    console.error("Failed to fetch deposits:", error);
+    return null;
+  }
+};
 
 export const getDepositSummary = async (
   month?: number,

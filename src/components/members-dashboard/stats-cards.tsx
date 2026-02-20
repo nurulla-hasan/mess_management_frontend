@@ -1,67 +1,83 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Utensils, Banknote, Landmark, Wallet } from "lucide-react"
+"use client";
 
-export function StatsCards() {
-  const stats = [
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Utensils, Wallet, CreditCard, TrendingUp } from "lucide-react";
+import { formatCurrency } from "@/lib/utils";
+
+interface StatsCardsProps {
+  stats: {
+    mealStats: {
+      totalMeals: number;
+      mealRate: number;
+      estimatedCost: number;
+    };
+    financials: {
+      totalDeposited: number;
+      currentBalance: number;
+    };
+  };
+}
+
+export function StatsCards({ stats }: StatsCardsProps) {
+  const { mealStats, financials } = stats;
+
+  const cards = [
     {
-      title: "My Total Meals",
-      value: "45.5",
-      change: "12% from last month",
+      title: "Total Meals",
+      value: mealStats.totalMeals.toString(),
+      description: "This month",
       icon: Utensils,
-      trend: "up",
-      color: "text-chart-1",
-      bg: "bg-chart-1/10"
+      color: "text-blue-600",
+      bg: "bg-blue-50",
     },
     {
       title: "Meal Rate",
-      value: "৳42.50",
-      change: "৳1.20 less than average",
-      icon: Banknote,
-      trend: "down",
-      color: "text-chart-2",
-      bg: "bg-chart-2/10"
+      value: formatCurrency(mealStats.mealRate),
+      description: "Current rate",
+      icon: TrendingUp,
+      color: "text-green-600",
+      bg: "bg-green-50",
     },
     {
-      title: "My Total Deposit",
-      value: "৳2,500",
-      change: "Verified: ৳2,000",
-      icon: Landmark,
-      trend: "neutral",
-      color: "text-chart-3",
-      bg: "bg-chart-3/10"
+      title: "Deposited",
+      value: formatCurrency(financials.totalDeposited),
+      description: "Total deposits",
+      icon: CreditCard,
+      color: "text-purple-600",
+      bg: "bg-purple-50",
     },
     {
       title: "Current Balance",
-      value: "+৳688.75",
-      change: "SURPLUS Funds available",
+      value: formatCurrency(financials.currentBalance),
+      description: financials.currentBalance >= 0 ? "Safe" : "Due",
       icon: Wallet,
-      trend: "up",
-      color: "text-chart-4",
-      bg: "bg-chart-4/10",
-      highlight: true
+      color: financials.currentBalance >= 0 ? "text-emerald-600" : "text-red-600",
+      bg: financials.currentBalance >= 0 ? "bg-emerald-50" : "bg-red-50",
     },
-  ]
+  ];
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
-      {stats.map((stat, index) => (
-        <Card key={index} className={stat.highlight ? "border-primary/20 bg-primary/5" : ""}>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      {cards.map((card, index) => (
+        <Card key={index} className="border shadow-sm hover:shadow-md transition-shadow">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              {stat.title}
+              {card.title}
             </CardTitle>
-            <div className={`p-2 rounded-full ${stat.bg}`}>
-              <stat.icon className={`h-4 w-4 ${stat.color}`} />
+            <div className={`p-2 rounded-full ${card.bg}`}>
+              <card.icon className={`h-4 w-4 ${card.color}`} />
             </div>
           </CardHeader>
           <CardContent>
-            <div className={`text-2xl font-bold ${stat.highlight ? "text-primary-foreground" : ""}`}>{stat.value}</div>
+            <div className={`text-2xl font-bold ${card.title === "Current Balance" ? card.color : ""}`}>
+              {card.value}
+            </div>
             <p className="text-xs text-muted-foreground mt-1">
-              {stat.change}
+              {card.description}
             </p>
           </CardContent>
         </Card>
       ))}
     </div>
-  )
+  );
 }

@@ -24,3 +24,33 @@ export const getDashboardStats = async (): Promise<DashboardStats | null> => {
     return null;
   }
 };
+
+export interface MemberDashboardStats {
+  memberInfo: any;
+  mealStats: {
+    totalMeals: number;
+    mealRate: number;
+    estimatedCost: number;
+  };
+  financials: {
+    totalDeposited: number;
+    totalLiability: number;
+    currentBalance: number;
+  };
+  recentMeals: any[];
+  recentDeposits: any[];
+  month: string;
+}
+
+export const getMemberDashboardStats = async (): Promise<MemberDashboardStats | null> => {
+  try {
+    const response = await serverFetch("/reports/member-dashboard");
+    if (response?.success) {
+      return response.data;
+    }
+    return null;
+  } catch (error) {
+    console.error("Failed to fetch member dashboard stats:", error);
+    return null;
+  }
+};

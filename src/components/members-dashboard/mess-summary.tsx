@@ -1,38 +1,67 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Calculator } from "lucide-react"
+"use client";
 
-export function MessSummary() {
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { formatCurrency } from "@/lib/utils";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
+
+interface MessSummaryProps {
+  financials: {
+    totalDeposited: number;
+    totalLiability: number;
+    currentBalance: number;
+  };
+}
+
+export function MessSummary({ financials }: MessSummaryProps) {
+  const data = [
+    { name: "Deposited", value: financials.totalDeposited, color: "#10B981" }, // Emerald-500
+    { name: "Cost", value: financials.totalLiability, color: "#EF4444" },     // Red-500
+  ];
+
+  const balance = financials.currentBalance;
+  const statusColor = balance >= 0 ? "text-emerald-600" : "text-red-600";
+
   return (
-    <Card className="h-full">
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-lg font-semibold flex items-center gap-2">
-          <Calculator className="h-5 w-5 " />
-          Mess Summary
-        </CardTitle>
+    <Card className="h-full border shadow-sm flex flex-col">
+      <CardHeader>
+        <CardTitle className="text-lg font-semibold">Financial Summary</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div>
-          <div className="flex justify-between items-start mb-1">
-            <span className="text-sm ">Total Market Cost</span>
-            <Badge variant="outline" className="text-[10px] h-5">Current Month</Badge>
-          </div>
-          <div className="text-3xl font-bold">৳32,450</div>
+      <CardContent className="flex-1 flex flex-col justify-center items-center">
+        <div className="h-50 w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={data}
+                cx="50%"
+                cy="50%"
+                innerRadius={60}
+                outerRadius={80}
+                paddingAngle={5}
+                dataKey="value"
+              >
+                {data.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip 
+                formatter={(value: number) => formatCurrency(value)}
+                contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+              />
+              <Legend verticalAlign="bottom" height={36}/>
+            </PieChart>
+          </ResponsiveContainer>
         </div>
         
-        <div className="pt-4 border-t">
-          <div className="flex justify-between items-start mb-1">
-            <span className="text-sm ">Total Mess Meals</span>
-            <span className="text-xs ">12 Members</span>
-          </div>
-          <div className="text-2xl font-bold">762.5</div>
-        </div>
-
-        <div className="pt-4 border-t">
-          <div className="text-sm mb-1 ">Base Meal Rate</div>
-          <div className="text-2xl font-bold">৳42.50</div>
+        <div className="mt-4 text-center">
+          <p className="text-sm text-muted-foreground">Current Balance</p>
+          <p className={`text-2xl font-bold ${statusColor}`}>
+            {formatCurrency(balance)}
+          </p>
+          <p className="text-xs text-muted-foreground mt-1">
+            {balance >= 0 ? "You are in safe zone" : "Please deposit soon"}
+          </p>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

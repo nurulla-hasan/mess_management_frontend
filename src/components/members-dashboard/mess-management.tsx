@@ -1,50 +1,38 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Phone, MessageSquare } from "lucide-react"
-import { Button } from "@/components/ui/button"
+"use client";
 
-export function MessManagement() {
-  const managers = [
-    {
-      name: "Zakir Hossain",
-      role: "Mess Manager",
-      image: "https://github.com/shadcn.png",
-      action: "call"
-    },
-    {
-      name: "Rakib Ahmed",
-      role: "Bazar Manager (Today)",
-      image: "https://github.com/shadcn.png",
-      action: "message"
-    }
-  ]
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { UtensilsCrossed, PlusCircle } from "lucide-react";
+import Link from "next/link";
 
+interface MessManagementProps {
+  user?: {
+    role?: string;
+  };
+}
+
+export function MessManagement({ user }: MessManagementProps) {
   return (
-    <Card>
+    <Card className="border shadow-sm">
       <CardHeader>
-        <CardTitle className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">
-          Mess Management
-        </CardTitle>
+        <CardTitle className="text-lg font-semibold">Quick Actions</CardTitle>
       </CardHeader>
-      <CardContent className="grid gap-6">
-        {managers.map((manager, index) => (
-          <div key={index} className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Avatar>
-                <AvatarImage src={manager.image} />
-                <AvatarFallback>{manager.name[0]}</AvatarFallback>
-              </Avatar>
-              <div>
-                <p className="font-medium text-sm">{manager.name}</p>
-                <p className="text-xs text-muted-foreground">{manager.role}</p>
-              </div>
-            </div>
-            <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground">
-              {manager.action === "call" ? <Phone className="h-4 w-4" /> : <MessageSquare className="h-4 w-4" />}
-            </Button>
-          </div>
-        ))}
+      <CardContent className="grid gap-4">
+        <Button asChild className="w-full justify-start gap-2" variant="outline">
+          <Link href="/dashboard/meals">
+            <UtensilsCrossed className="h-4 w-4 text-orange-500" />
+            Manage Meals
+          </Link>
+        </Button>
+        {user?.role === 'admin' && (
+          <Button asChild className="w-full justify-start gap-2" variant="outline">
+            <Link href="/dashboard/expenses">
+              <PlusCircle className="h-4 w-4 text-blue-500" />
+              Add Expense
+            </Link>
+          </Button>
+        )}
       </CardContent>
     </Card>
-  )
+  );
 }
