@@ -18,12 +18,13 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ScrollArea, ScrollBar } from "../scroll-area";
 import { DataTablePagination } from "./data-table-pagination";
+import { ScrollArea, ScrollBar } from "../scroll-area";
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 declare module "@tanstack/react-table" {
@@ -81,8 +82,8 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="space-y-4 w-full overflow-hidden">
-      <ScrollArea className="w-full rounded-lg border whitespace-nowrap">
+    <div className="space-y-4">
+      <ScrollArea className="w-[calc(100vw-85px)] md:w-[calc(100vw-340px)]  xl:w-full rounded-lg border whitespace-nowrap">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -155,6 +156,22 @@ export function DataTable<TData, TValue>({
               </TableRow>
             )}
           </TableBody>
+          <TableFooter className="bg-transparent border-t-0">
+            {table.getFooterGroups().map((footerGroup) => (
+              <TableRow key={footerGroup.id} className="hover:bg-transparent border-b-0">
+                {footerGroup.headers.map((footer) => (
+                  <TableCell key={footer.id} className="p-2">
+                    {footer.isPlaceholder
+                      ? null
+                      : flexRender(
+                          footer.column.columnDef.footer,
+                          footer.getContext()
+                        )}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableFooter>
         </Table>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>

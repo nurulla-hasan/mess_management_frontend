@@ -131,9 +131,9 @@ const columns: ColumnDef<Expense>[] = [
   },
   {
     accessorKey: "amount",
-    header: () => <div className="text-right">AMOUNT (BDT)</div>,
+    header: () => <div>AMOUNT (BDT)</div>,
     cell: ({ row }) => (
-      <div className="text-right font-bold">
+      <div className="font-bold">
         {row.getValue<number>("amount").toLocaleString("en-BD", {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
@@ -152,6 +152,7 @@ const columns: ColumnDef<Expense>[] = [
   },
   {
     id: "actions",
+    header: () => <div>ACTIONS</div>,
     cell: () => (
       <Button variant="ghost" size="icon">
         <MoreVertical />
