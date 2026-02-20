@@ -50,7 +50,7 @@ export function AddExpenseModal() {
         amount: parseFloat(formData.amount),
         category: formData.category,
         items: formData.items,
-        memberId: formData.buyer.value,
+        buyerId: formData.buyer.value,
         paymentSource: formData.paymentSource,
       };
 
@@ -136,9 +136,12 @@ export function AddExpenseModal() {
               <SelectValue placeholder="Select Category" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="market">Market</SelectItem>
-              <SelectItem value="utilities">Utilities</SelectItem>
-              <SelectItem value="maintenance">Maintenance</SelectItem>
+              <SelectItem value="meat_fish">Meat / Fish</SelectItem>
+              <SelectItem value="vegetables">Vegetables</SelectItem>
+              <SelectItem value="groceries">Groceries</SelectItem>
+              <SelectItem value="utility">Utility</SelectItem>
+              <SelectItem value="gas">Gas</SelectItem>
+              <SelectItem value="rent">Rent</SelectItem>
               <SelectItem value="other">Other</SelectItem>
             </SelectContent>
           </Select>
