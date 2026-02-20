@@ -25,7 +25,7 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
   const year = paramYear ? parseInt(paramYear) : new Date().getFullYear();
 
   const [mealRateTrend, expenseDistribution, settlementData] = await Promise.all([
-    getMealRateTrend(6),
+    getMealRateTrend(6, month, year),
     getExpenseDistribution(month, year),
     getSettlement(month, year),
   ]);

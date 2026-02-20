@@ -31,16 +31,17 @@ export function MealCalendar({ meals, currentDate }: MealCalendarProps) {
   const [isPending, startTransition] = useTransition();
 
   // Process meals into a map for easy lookup
-  const mealMap: Record<string, { lunch: number; dinner: number }> = {};
+  const mealMap: Record<string, { breakfast: number; lunch: number; dinner: number }> = {};
   if (meals) {
     meals.forEach((meal) => {
       const dateKey = format(new Date(meal.date), "yyyy-MM-dd");
       const dayTotals = meal.entries.reduce(
         (acc, entry) => ({
+          breakfast: acc.breakfast + (entry.breakfast || 0),
           lunch: acc.lunch + entry.lunch,
           dinner: acc.dinner + entry.dinner,
         }),
-        { lunch: 0, dinner: 0 }
+        { breakfast: 0, lunch: 0, dinner: 0 }
       );
       mealMap[dateKey] = dayTotals;
     });
@@ -108,6 +109,10 @@ export function MealCalendar({ meals, currentDate }: MealCalendarProps) {
         {/* Legend */}
         <div className="flex gap-4 px-6 pb-4 text-xs">
           <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 rounded-sm bg-emerald-100 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800"></div>
+            <span>Breakfast</span>
+          </div>
+          <div className="flex items-center gap-1.5">
             <div className="w-3 h-3 rounded-sm bg-blue-100 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800"></div>
             <span>Lunch</span>
           </div>
@@ -174,6 +179,12 @@ export function MealCalendar({ meals, currentDate }: MealCalendarProps) {
                 <div className="flex flex-col gap-1">
                   {data ? (
                     <>
+                      {data.breakfast > 0 && (
+                        <div className="flex justify-between text-xs px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                          <span className="font-semibold">B</span>
+                          <span>{data.breakfast}</span>
+                        </div>
+                      )}
                       {data.lunch > 0 && (
                         <div className="flex justify-between text-xs px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
                           <span className="font-semibold">L</span>

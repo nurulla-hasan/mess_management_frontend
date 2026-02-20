@@ -45,7 +45,14 @@ export function MessSummary({ financials }: MessSummaryProps) {
               </Pie>
               <Tooltip 
                 formatter={(value: number) => formatCurrency(value)}
-                contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                contentStyle={{ 
+                  borderRadius: '8px', 
+                  border: 'none', 
+                  boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                  backgroundColor: 'var(--card)',
+                  color: 'var(--card-foreground)'
+                }}
+                itemStyle={{ color: 'var(--foreground)' }}
               />
               <Legend verticalAlign="bottom" height={36}/>
             </PieChart>

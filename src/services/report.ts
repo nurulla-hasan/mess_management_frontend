@@ -47,9 +47,14 @@ export interface SettlementResponse {
   totals: SettlementTotals;
 }
 
-export const getMealRateTrend = async (months: number = 6): Promise<MealRateTrend[] | null> => {
+export const getMealRateTrend = async (months: number = 6, month?: number, year?: number): Promise<MealRateTrend[] | null> => {
   try {
-    const response = await serverFetch(`/reports/meal-rate-trend?months=${months}`);
+    const queryParams = new URLSearchParams();
+    queryParams.append("months", months.toString());
+    if (month) queryParams.append("month", month.toString());
+    if (year) queryParams.append("year", year.toString());
+
+    const response = await serverFetch(`/reports/meal-rate-trend?${queryParams}`);
     return response?.success ? response.data : null;
   } catch (error) {
     if ((error as Error).message !== "Not authorized, no token provided") {

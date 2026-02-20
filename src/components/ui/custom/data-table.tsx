@@ -177,9 +177,9 @@ export function DataTable<TData, TValue>({
               </TableRow>
             )}
           </TableBody>
-          <TableFooter className="bg-transparent border-t-0">
+          <TableFooter className="border-t">
             {table.getFooterGroups().map((footerGroup) => (
-              <TableRow key={footerGroup.id} className="hover:bg-transparent border-b-0">
+              <TableRow key={footerGroup.id}>
                 {footerGroup.headers.map((footer) => (
                   <TableCell key={footer.id} className="p-2">
                     {footer.isPlaceholder

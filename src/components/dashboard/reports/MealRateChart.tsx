@@ -22,14 +22,14 @@ export function MealRateChart({ data }: MealRateChartProps) {
             <LineChart data={data}>
               <XAxis
                 dataKey="month"
-                stroke="#888888"
+                stroke="var(--muted-foreground)"
                 fontSize={12}
                 tickLine={false}
                 axisLine={false}
                 dy={10}
               />
               <YAxis
-                stroke="#888888"
+                stroke="var(--muted-foreground)"
                 fontSize={12}
                 tickLine={false}
                 axisLine={false}
@@ -37,16 +37,22 @@ export function MealRateChart({ data }: MealRateChartProps) {
                 domain={[0, 'auto']}
               />
               <Tooltip 
-                contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
-                itemStyle={{ color: "#333", fontWeight: "bold" }}
+                contentStyle={{ 
+                  borderRadius: "8px", 
+                  border: "none", 
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                  backgroundColor: "var(--card)",
+                  color: "var(--card-foreground)"
+                }}
+                itemStyle={{ color: "var(--primary)", fontWeight: "bold" }}
                 formatter={(value) => [`৳${value}`, "Rate"]}
               />
               <Line
                 type="monotone"
                 dataKey="rate"
-                stroke="hsl(var(--primary))"
+                stroke="var(--primary)"
                 strokeWidth={2}
-                dot={{ r: 4, fill: "hsl(var(--primary))" }}
+                dot={{ r: 4, fill: "var(--primary)" }}
                 activeDot={{ r: 6 }}
               />
             </LineChart>

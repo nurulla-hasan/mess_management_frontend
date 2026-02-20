@@ -11,13 +11,13 @@ interface ExpenseDistributionProps {
 }
 
 const COLORS: Record<string, string> = {
-  "Market": "#22c55e",
-  "Rent": "#1a1a1a",
-  "Gas/Utility": "#16a34a",
-  "Other": "#9ca3af"
+  "Market": "var(--chart-2)",
+  "Rent": "var(--chart-1)",
+  "Gas/Utility": "var(--chart-3)",
+  "Other": "var(--chart-4)"
 };
 
-const DEFAULT_COLOR = "#888888";
+const DEFAULT_COLOR = "var(--muted)";
 
 export function ExpenseDistribution({ total, distribution }: ExpenseDistributionProps) {
   // Filter out zero values to avoid empty segments
@@ -54,7 +54,14 @@ export function ExpenseDistribution({ total, distribution }: ExpenseDistribution
               </Pie>
               <Tooltip 
                  formatter={(value, name, props) => [`${props.payload.percentage}% (৳${value})`, name]}
-                 contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
+                 contentStyle={{ 
+                   borderRadius: "8px", 
+                   border: "none", 
+                   boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                   backgroundColor: "var(--card)",
+                   color: "var(--card-foreground)"
+                 }}
+                 itemStyle={{ color: "var(--foreground)" }}
               />
             </PieChart>
           </ResponsiveContainer>
