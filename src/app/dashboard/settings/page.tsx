@@ -23,7 +23,7 @@ export default function SettingsPage() {
         title="System Settings"
         description="Manage your profile, mess preferences and security."
       >
-        <Button className="bg-green-500 hover:bg-green-600">
+        <Button>
           Save Changes
         </Button>
       </PageHeader>

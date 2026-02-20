@@ -1,23 +1,17 @@
-import { Button } from "@/components/ui/button";
-import { Plus, Minus, CreditCard, RotateCw } from "lucide-react";
+import { AddMealModal } from "./quick-actions/AddMealModal";
+import { AddExpenseModal } from "./quick-actions/AddExpenseModal";
+import { RecordPaymentModal } from "./quick-actions/RecordPaymentModal";
+import { PettyCashAdjustmentModal } from "./quick-actions/PettyCashAdjustmentModal";
 
 export function QuickActions() {
   return (
     <div className="space-y-4">
       <h2 className="text-lg font-semibold tracking-tight">Quick Actions</h2>
       <div className="flex flex-wrap gap-4">
-        <Button>
-          <Plus /> Add Meal
-        </Button>
-        <Button variant="destructive">
-          <Minus /> Add Expense
-        </Button>
-        <Button variant="secondary">
-          <CreditCard /> Record Payment
-        </Button>
-        <Button variant="outline">
-          <RotateCw /> Petty Cash Adjustment
-        </Button>
+        <AddMealModal />
+        <AddExpenseModal />
+        <RecordPaymentModal />
+        <PettyCashAdjustmentModal />
       </div>
     </div>
   );
