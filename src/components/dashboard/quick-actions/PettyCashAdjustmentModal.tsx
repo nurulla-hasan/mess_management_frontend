@@ -102,6 +102,9 @@ export function PettyCashAdjustmentModal() {
       }
     >
       <form onSubmit={handleSubmit} className="space-y-4 p-6">
+        <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-md p-3 text-sm text-yellow-600 dark:text-yellow-400">
+            For regular bills like <strong>Rent, Gas, or Utility</strong>, please use the <span className="font-semibold text-destructive">Add Expense</span> button instead. Use this only for small balance corrections.
+        </div>
         <Tabs value={type} onValueChange={setType} className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="deduct">Deduct (Expense)</TabsTrigger>

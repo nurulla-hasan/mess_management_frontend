@@ -3,9 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/custom/data-table";
-import { Pencil } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,17 +11,49 @@ import { Member } from "@/services/member";
 import { PaginationMeta } from "@/types/global.types";
 import { format } from "date-fns";
 
-const StatusCell = ({ initialStatus }: { initialStatus: string }) => {
+import { updateMemberStatusAction } from "@/actions/member";
+import { ErrorToast, SuccessToast } from "@/lib/utils";
+import { EditMemberModal } from "./EditMemberModal";
+
+const StatusCell = ({ initialStatus, memberId }: { initialStatus: string, memberId: string }) => {
   const [isActive, setIsActive] = useState(initialStatus === "active");
+  const [loading, setLoading] = useState(false);
+
+  const handleToggle = async () => {
+    if (loading) return;
+    setLoading(true);
+    
+    const newStatus = !isActive ? "active" : "inactive";
+    // Optimistic update
+    setIsActive(!isActive);
+
+    try {
+        const result = await updateMemberStatusAction(memberId, newStatus);
+        if (!result?.success) {
+            // Revert
+            setIsActive(isActive);
+            ErrorToast(result?.message || "Failed to update status");
+        } else {
+            SuccessToast(`Member is now ${newStatus}`);
+        }
+    } catch {
+        setIsActive(isActive);
+        ErrorToast("Something went wrong");
+    } finally {
+        setLoading(false);
+    }
+  };
+
   return (
     <div className="flex items-center gap-2">
       <div
         role="switch"
         aria-checked={isActive}
-        onClick={() => setIsActive(!isActive)}
+        onClick={handleToggle}
         className={cn(
           "peer inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50",
           isActive ? "bg-green-500" : "bg-input",
+          loading && "opacity-50 cursor-wait"
         )}
       >
         <span
@@ -126,16 +156,12 @@ const columns: ColumnDef<Member>[] = [
   {
     accessorKey: "status",
     header: "STATUS",
-    cell: ({ row }) => <StatusCell initialStatus={row.original.status} />,
+    cell: ({ row }) => <StatusCell initialStatus={row.original.status} memberId={row.original._id} />,
   },
   {
     id: "actions",
     header: "ACTIONS",
-    cell: () => (
-      <Button variant="ghost" size="icon" className="h-8 w-8">
-        <Pencil className="h-4 w-4 text-muted-foreground" />
-      </Button>
-    ),
+    cell: ({ row }) => <EditMemberModal member={row.original} />,
   },
 ];
 

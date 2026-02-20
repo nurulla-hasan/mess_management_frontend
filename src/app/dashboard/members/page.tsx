@@ -1,8 +1,7 @@
 import { MemberStats } from "@/components/dashboard/members/MemberStats";
 import { MemberTable } from "@/components/dashboard/members/MemberTable";
 import { SearchInput } from "@/components/ui/custom/search-input";
-import { Button } from "@/components/ui/button";
-import { UserPlus } from "lucide-react";
+import { AddMemberModal } from "@/components/dashboard/members/AddMemberModal";
 import PageHeader from "@/components/ui/custom/page-header";
 import { getMembers, getMemberStats } from "@/services/member";
 
@@ -28,10 +27,7 @@ export default async function MembersPage({ searchParams }: PageProps) {
         title="Member Management" 
         description="Manage your mess members, roles, and status."
       >
-        <Button>
-          <UserPlus className="h-4 w-4" />
-          Add Member
-        </Button>
+        <AddMemberModal />
       </PageHeader>
 
       <MemberStats stats={stats} />

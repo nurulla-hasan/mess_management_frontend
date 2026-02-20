@@ -56,6 +56,9 @@ export function MemberStats({ stats }: MemberStatsProps) {
     }).format(amount);
   };
 
+  const pendingAmount = stats?.pendingSettlements || 0;
+  const hasPending = pendingAmount > 0;
+
   return (
     <div className="grid gap-4 md:grid-cols-3">
       <StatCard
@@ -73,10 +76,10 @@ export function MemberStats({ stats }: MemberStatsProps) {
       />
       <StatCard
         title="Pending Settlements"
-        value={formatCurrency(stats?.pendingSettlements || 0)}
-        statusText="Needs attention"
-        statusType="warning"
-        icon={<AlertCircle className="h-3 w-3 text-red-500" />}
+        value={formatCurrency(pendingAmount)}
+        statusText={hasPending ? "Needs attention" : "All cleared"}
+        statusType={hasPending ? "warning" : "success"}
+        icon={hasPending ? <AlertCircle className="h-3 w-3 text-red-500" /> : <CheckCircle2 className="h-3 w-3 text-green-500" />}
       />
     </div>
   );
